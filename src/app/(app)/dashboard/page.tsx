@@ -15,10 +15,11 @@ import { MetricCard } from "@/components/MetricCard";
 import { prisma } from "@/lib/db";
 
 async function getStats() {
-  const [totalLeads, totalSent, totalTemplates, recentLogs, userResult] = await Promise.all([
+  const [totalLeads, totalSent, totalTemplates, totalOpened, recentLogs, userResult] = await Promise.all([
     prisma.lead.count(),
     prisma.emailLog.count({ where: { status: "sent" } }),
     prisma.emailTemplate.count(),
+    prisma.emailLog.count({ where: { NOT: { openedAt: null } } }),
     prisma.emailLog.findMany({
       orderBy: { createdAt: 'desc' },
       take: 5,
@@ -28,13 +29,6 @@ async function getStats() {
   ]);
 
   const user = userResult || { name: 'Arquitecto' };
-
-  // Use raw query for opened count to bypass validation error until Prisma client is regenerated
-  const openedResult = await prisma.$queryRaw<Array<{ count: bigint }>>`
-    SELECT COUNT(*) as count FROM "email_logs" WHERE "opened_at" IS NOT NULL
-  `;
-  const totalOpened = Number(openedResult[0]?.count || 0);
-
   const openRate = totalSent > 0 ? (totalOpened / totalSent) * 100 : 0;
 
   // Handle pluralization and formatting for time ago safely for this demo
@@ -84,16 +78,12 @@ export default async function Dashboard() {
         <MetricCard 
           label="Audiencia Total" 
           value={stats.totalLeads}
-          change="+12.5%" 
-          positive={true}
           icon={Users} 
           href="/audience"
         />
         <MetricCard 
           label="Correos Enviados" 
           value={stats.totalSent}
-          change="+8.2%" 
-          positive={true}
           icon={Send} 
           href="/emails"
         />
