@@ -51,9 +51,9 @@ export default function LandingPage() {
           <h1 className="text-6xl md:text-8xl font-bold tracking-tighter mb-8 bg-gradient-to-b from-white to-white/50 bg-clip-text text-transparent animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
             Send emails that <br /> get noticed.
           </h1>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+          <h2 className="text-xl text-slate-400 max-w-2xl mx-auto mb-10 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
             MarketMail is the enterprise-grade platform for high-impact communication. Build, automate, and track your campaigns with surgeon precision.
-          </p>
+          </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
             <Link href="/dashboard" className="bg-violet-600 hover:bg-violet-700 text-white font-bold px-8 py-4 rounded-2xl flex items-center gap-2 transition-all shadow-2xl shadow-violet-600/30 active:scale-95 group">
               Explore Dashboard
