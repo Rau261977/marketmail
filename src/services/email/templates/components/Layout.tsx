@@ -33,7 +33,9 @@ export const Layout = ({
   logoUrl = "https://carniapp.com/logo.png",
   trackingId,
 }: LayoutProps) => {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://marketmail.example.com";
+  // Ensure NEXT_PUBLIC_APP_URL is set to your production domain in Vercel.
+  // Emails sent to external clients need an absolute URL to reach your server.
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   
   return (
     <Html>
