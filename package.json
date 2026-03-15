@@ -1,0 +1,39 @@
+{
+  "name": "marketmail",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "worker": "ts-node src/worker.ts",
+    "usage": "ts-node src/examples/usage.ts",
+    "prisma:generate": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.0.0",
+    "@react-email/components": "latest",
+    "@react-email/render": "latest",
+    "clsx": "latest",
+    "lucide-react": "latest",
+    "next": "16.1.6",
+    "react": "latest",
+    "react-dom": "latest",
+    "resend": "latest",
+    "tailwind-merge": "latest"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "autoprefixer": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "postcss": "latest",
+    "prisma": "^6.0.0",
+    "tailwindcss": "latest",
+    "ts-node": "latest",
+    "typescript": "latest"
+  }
+}

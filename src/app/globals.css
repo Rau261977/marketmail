@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: hsl(240 10% 4%);
+  --color-foreground: hsl(0 0% 98%);
+  
+  --color-card: hsl(240 10% 6%);
+  --color-card-foreground: hsl(0 0% 98%);
+  
+  --color-primary: hsl(263 70% 50%);
+  --color-primary-foreground: hsl(0 0% 98%);
+  
+  --radius-lg: 0.75rem;
+  --radius-md: calc(0.75rem - 2px);
+  --radius-sm: calc(0.75rem - 4px);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@utility glass {
+  background-color: rgb(255 255 255 / 0.05);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgb(255 255 255 / 0.1);
+}
+
+@utility glass-card {
+  @apply glass rounded-2xl p-6 shadow-2xl;
+}
+
+@utility gradient-text {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #a78bfa, #34d399);
+}
+
