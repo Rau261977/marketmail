@@ -10,6 +10,7 @@ import {
   Mail
 } from "lucide-react";
 import { prisma } from "@/lib/db";
+import { ProcessQueueButton } from "@/components/ProcessQueueButton";
 
 async function getCampaigns() {
   return await prisma.emailCampaign.findMany({
@@ -54,10 +55,13 @@ export default async function CampaignsPage() {
           <h2 className="text-3xl font-bold">Campaigns</h2>
           <p className="text-slate-400 mt-1">Configure mass mailings and monitor delivery status.</p>
         </div>
-        <button className="flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-violet-600/20 active:scale-95">
-          <Plus size={18} />
-          Create Campaign
-        </button>
+        <div className="flex items-center gap-3">
+          <ProcessQueueButton />
+          <button className="flex items-center gap-2 bg-violet-600/10 hover:bg-violet-600/20 text-violet-400 px-4 py-2 rounded-xl text-sm font-semibold transition-all active:scale-95 border border-violet-500/20">
+            <Plus size={18} />
+            Create Campaign
+          </button>
+        </div>
       </div>
 
       {/* Queue Health Overview */}
