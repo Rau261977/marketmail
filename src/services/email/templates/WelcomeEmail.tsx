@@ -1,5 +1,8 @@
 import * as React from "react";
-import { Text, Section, Row, Column } from "@react-email/components";
+import { Text } from "@react-email/text";
+import { Section } from "@react-email/section";
+import { Row } from "@react-email/row";
+import { Column } from "@react-email/column";
 import { Layout } from "./components/Layout";
 import { Button } from "./components/Button";
 

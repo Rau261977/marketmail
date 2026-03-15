@@ -1,0 +1,180 @@
+﻿
+> marketmail@1.0.0 build
+> next build
+
+Ôû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+- Experiments (use with caution):
+  ┬À optimizePackageImports
+
+  Creating an optimized production build ...
+node.exe : 
+En línea: 1 Carácter: 1
++ & "C:\Program 
+Files\nodejs/node.exe" "C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpec 
+   ified: (:String) [], RemoteExcept  
+  ion
+    + FullyQualifiedErrorId : NativeC 
+   ommandError
+ 
+> Build error occurred
+Error: Turbopack build failed with 2 
+errors:
+./node_modules/@react-email/tailwind/d
+ist/index.mjs:5:1
+Module not found: Can't resolve 
+'@react-email/code-block'
+[0m [90m 3 |[39m [36mimport[39m 
+{ [33mBody[39m } [36mfrom[39m [32
+m"@react-email/body"[39m[33m;[39m
+ [90m 4 |[39m [36mimport[39m { 
+[33mButton[39m } [36mfrom[39m [32
+m"@react-email/button"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 5 |[39m 
+[36mimport[39m { 
+[33mCodeBlock[39m } [36mfrom[39m 
+[32m"@react-email/code-block"[39m[33
+m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[
+31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m[39m[31m[1m^
+[22m[39m[31m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[22m[39m[31m
+[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[
+31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m[39m[31m[1m^
+[22m[39m[31m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[22m[39m[31m
+[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[
+31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m[39m[31m[1m^
+[22m[39m[31m[1m^[22m[39m
+ [90m 6 |[39m [36mimport[39m { 
+[33mCodeInline[39m } [36mfrom[39m 
+[32m"@react-email/code-inline"[39m[
+33m;[39m
+ [90m 7 |[39m [36mimport[39m { 
+[33mContainer[39m } [36mfrom[39m 
+[32m"@react-email/container"[39m[33m
+;[39m
+ [90m 8 |[39m [36mimport[39m { 
+[33mHeading[39m } [36mfrom[39m [3
+2m"@react-email/heading"[39m[33m;[3
+9m[0m
+
+
+
+Import trace:
+  App Route:
+    ./node_modules/@react-email/tailwi
+nd/dist/index.mjs
+    ./src/services/email/templates/com
+ponents/Layout.tsx
+    ./src/services/email/templates/Wel
+comeEmail.tsx
+    ./src/app/api/send-now/route.ts
+
+https://nextjs.org/docs/messages/modul
+e-not-found
+
+
+./node_modules/@react-email/tailwind/d
+ist/index.mjs:6:1
+Module not found: Can't resolve 
+'@react-email/code-inline'
+[0m [90m 4 |[39m [36mimport[39m 
+{ [33mButton[39m } [36mfrom[39m [
+32m"@react-email/button"[39m[33m;[3
+9m
+ [90m 5 |[39m [36mimport[39m { 
+[33mCodeBlock[39m } [36mfrom[39m 
+[32m"@react-email/code-block"[39m[33
+m;[39m
+[31m[1m>[22m[39m[90m 6 |[39m 
+[36mimport[39m { 
+[33mCodeInline[39m } [36mfrom[39m 
+[32m"@react-email/code-inline"[39m[
+33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[
+31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m[39m[31m[1m^
+[22m[39m[31m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[22m[39m[31m
+[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[
+31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m[39m[31m[1m^
+[22m[39m[31m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[22m[39m[31m
+[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[
+31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m[39m[31m[1m^
+[22m[39m[31m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mimport[39m { 
+[33mContainer[39m } [36mfrom[39m 
+[32m"@react-email/container"[39m[33m
+;[39m
+ [90m 8 |[39m [36mimport[39m { 
+[33mHeading[39m } [36mfrom[39m [3
+2m"@react-email/heading"[39m[33m;[3
+9m
+ [90m 9 |[39m [36mimport[39m { 
+[33mHr[39m } [36mfrom[39m [32m"@r
+eact-email/hr"[39m[33m;[39m[0m
+
+
+
+Import trace:
+  App Route:
+    ./node_modules/@react-email/tailwi
+nd/dist/index.mjs
+    ./src/services/email/templates/com
+ponents/Layout.tsx
+    ./src/services/email/templates/Wel
+comeEmail.tsx
+    ./src/app/api/send-now/route.ts
+
+https://nextjs.org/docs/messages/modul
+e-not-found
+
+
+    at ./node_modules/ (react-email/ta
+ilwind/dist/index.mjs:5:1)
+    at <unknown> (https://nextjs.org/d
+ocs/messages/module-not-found)
+    at ./node_modules/ (react-email/ta
+ilwind/dist/index.mjs:6:1)
+    at <unknown> (https://nextjs.org/d
+ocs/messages/module-not-found)

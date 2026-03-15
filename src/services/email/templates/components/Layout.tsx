@@ -1,18 +1,16 @@
 import * as React from "react";
-import { 
-  Html, 
-  Head, 
-  Preview, 
-  Body, 
-  Container, 
-  Section, 
-  Img, 
-  Heading, 
-  Hr, 
-  Text, 
-  Link,
-  Tailwind
-} from "@react-email/components";
+import { Html } from "@react-email/html";
+import { Head } from "@react-email/head";
+import { Preview } from "@react-email/preview";
+import { Body } from "@react-email/body";
+import { Container } from "@react-email/container";
+import { Section } from "@react-email/section";
+import { Img } from "@react-email/img";
+import { Heading } from "@react-email/heading";
+import { Hr } from "@react-email/hr";
+import { Text } from "@react-email/text";
+import { Link } from "@react-email/link";
+import { Tailwind } from "@react-email/tailwind";
 
 interface LayoutProps {
   children: React.ReactNode;
