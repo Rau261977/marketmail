@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@prisma/client": "^6.0.0",
-    "@react-email/components": "latest",
-    "@react-email/render": "latest",
+    "@react-email/components": "1.0.9",
+    "@react-email/render": "2.0.4",
     "clsx": "latest",
     "lucide-react": "latest",
     "next": "16.1.6",
