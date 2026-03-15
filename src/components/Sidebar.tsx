@@ -9,8 +9,10 @@ import {
   Layers, 
   Settings, 
   Send,
-  Plus
+  Plus,
+  LogOut
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -29,6 +31,12 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    // In a real app, clear auth tokens here
+    router.push("/");
+  };
 
   return (
     <aside className="w-64 glass border-r border-white/5 h-full flex flex-col">
@@ -57,10 +65,18 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="p-4 mt-auto">
+      <div className="p-4 mt-auto space-y-2">
         <button className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl py-3 px-4 font-semibold shadow-lg shadow-violet-600/20 hover:shadow-violet-600/30 transition-all hover:-translate-y-0.5 active:translate-y-0">
           <Plus size={20} />
           Nueva Campaña
+        </button>
+        
+        <button 
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center gap-2 glass text-slate-400 rounded-xl py-3 px-4 text-sm font-medium hover:bg-white/5 hover:text-slate-200 transition-all"
+        >
+          <LogOut size={18} />
+          Cerrar Sesión
         </button>
       </div>
     </aside>

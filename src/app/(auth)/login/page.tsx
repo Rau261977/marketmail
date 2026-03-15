@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Lock, Loader2, ChevronRight, Github } from "lucide-react";
+import { Mail, Lock, Loader2, ChevronRight, Github, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -42,7 +43,7 @@ export default function LoginPage() {
                 <input 
                   required
                   type="email" 
-                  placeholder="arquitecto@marketmail.com"
+                  placeholder="admin@carniapp.com"
                   className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-white placeholder:text-slate-600"
                 />
               </div>
@@ -57,10 +58,17 @@ export default function LoginPage() {
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                 <input 
                   required
-                  type="password" 
-                  placeholder="••••••••"
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-white placeholder:text-slate-600"
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="password123"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-white placeholder:text-slate-600"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
             </div>
 
@@ -89,10 +97,15 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <button className="w-full glass py-3 rounded-2xl flex items-center justify-center gap-3 hover:bg-white/5 transition-all active:scale-[0.98] text-sm font-medium">
+            <button className="w-full glass py-3 rounded-2xl flex items-center justify-center gap-3 hover:bg-white/5 transition-all active:scale-[0.98] text-sm font-medium">
             <Github size={20} />
             Acceder con GitHub
           </button>
+
+          <div className="mt-6 p-4 rounded-xl bg-violet-600/5 border border-violet-600/10 text-center">
+            <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Acceso para Raul</p>
+            <p className="text-xs text-slate-400">admin@carniapp.com / password123</p>
+          </div>
         </div>
 
         <p className="text-center text-slate-500 text-sm mt-8">
