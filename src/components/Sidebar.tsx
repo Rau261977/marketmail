@@ -19,7 +19,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 const navItems = [
-  { icon: BarChart3, label: "Panel Principal", href: "/" },
+  { icon: BarChart3, label: "Panel Principal", href: "/dashboard" },
   { icon: Users, label: "Audiencia", href: "/audience" },
   { icon: Mail, label: "Plantillas", href: "/templates" },
   { icon: Send, label: "Campañas", href: "/campaigns" },

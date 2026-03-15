@@ -13,7 +13,7 @@ import { MetricCard } from "@/components/MetricCard";
 import { prisma } from "@/lib/db";
 
 async function getStats() {
-  const [totalLeads, totalSent, totalTemplates, recentLogs] = await Promise.all([
+  const [totalLeads, totalSent, totalTemplates, recentLogs, userResult] = await Promise.all([
     prisma.lead.count(),
     prisma.emailLog.count({ where: { status: "sent" } }),
     prisma.emailTemplate.count(),
@@ -21,8 +21,11 @@ async function getStats() {
       orderBy: { createdAt: 'desc' },
       take: 5,
       include: { lead: true }
-    })
+    }),
+    prisma.user.findFirst()
   ]);
+
+  const user = userResult || { name: 'Arquitecto' };
 
   // Use raw query for opened count to bypass validation error until Prisma client is regenerated
   const openedResult = await prisma.$queryRaw<Array<{ count: bigint }>>`
@@ -52,7 +55,8 @@ async function getStats() {
       id: log.id,
       text: `Correo enviado a ${log.lead.name || log.lead.email}`,
       time: formatTimeAgo(log.createdAt)
-    }))
+    })),
+    userName: user.name || 'Arquitecto'
   };
 }
 
@@ -63,8 +67,8 @@ export default async function Dashboard() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex justify-between items-end">
         <div>
-          <h2 className="text-3xl font-bold font-heading">Bienvenido, Arquitecto</h2>
-          <p className="text-slate-400 mt-1">Esto es lo que está pasando en tus campañas hoy.</p>
+          <h2 className="text-3xl font-bold font-heading">Bienvenido, {stats.userName}</h2>
+          <p className="text-slate-400 mt-1">Esto es lo que está pasando en las campañas de CarniApp hoy.</p>
         </div>
         <div className="flex gap-3">
           <button className="glass px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/10 transition-colors">

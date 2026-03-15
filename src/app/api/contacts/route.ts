@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     });
 
     revalidatePath("/audience");
-    revalidatePath("/");
+    revalidatePath("/dashboard");
 
     return NextResponse.json(lead);
   } catch (error: any) {

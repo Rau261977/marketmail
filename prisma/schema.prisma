@@ -18,6 +18,7 @@ model Tenant {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   settings  TenantEmailSetting?
+  users     User[]
   leads     Lead[]
   templates EmailTemplate[]
   campaigns EmailCampaign[]
@@ -167,4 +168,19 @@ model EmailLog {
   template EmailTemplate? @relation(fields: [templateId], references: [id])
 
   @@map("email_logs")
+}
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  name      String?
+  password  String   @default("password123") // Temporary mock password
+  role      String   @default("ADMIN")
+  tenantId  String   @map("tenant_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@map("users")
 }

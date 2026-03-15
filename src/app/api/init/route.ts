@@ -7,23 +7,39 @@ export async function GET() {
     let tenant = await prisma.tenant.findFirst();
 
     if (!tenant) {
-      console.log('[Init] No tenant found, creating default...');
+      console.log('[Init] No tenant found, creating CarniApp...');
       tenant = await prisma.tenant.create({
         data: {
-          name: 'MarketMail Default',
-          slug: 'marketmail-default',
+          name: 'CarniApp',
+          slug: 'carniapp',
           settings: {
             create: {
-              fromName: 'MarketMail',
-              fromEmail: process.env.EMAIL_FROM_DEFAULT || 'hello@example.com',
-              brandingPrimaryColor: '#7C3AED', // Violet 600
+              fromName: 'Raul de CarniApp',
+              fromEmail: 'admin@carniapp.com',
+              brandingPrimaryColor: '#7C3AED',
             }
           }
         }
       });
-      console.log('[Init] Default tenant created:', tenant.id);
-    } else {
-      console.log('[Init] Tenant already exists:', tenant.id);
+      console.log('[Init] CarniApp tenant created:', tenant.id);
+    }
+
+    // 1.5 Create Raul User if not exists
+    let user = await prisma.user.findUnique({
+      where: { email: 'admin@carniapp.com' }
+    });
+
+    if (!user) {
+      console.log('[Init] Creating Raul user...');
+      user = await prisma.user.create({
+        data: {
+          email: 'admin@carniapp.com',
+          name: 'Raul',
+          tenantId: tenant.id,
+          role: 'ADMIN'
+        }
+      });
+      console.log('[Init] User Raul created.');
     }
 
     // 2. Check if a default template exists
@@ -39,8 +55,8 @@ export async function GET() {
                 slug: 'welcome',
                 subject: '¡Bienvenido a MarketMail!',
                 contentJson: {
-                    heading: "¡Hola! Gracias por sumarte",
-                    body: "Estamos felices de tenerte con nosotros.",
+                    heading: "¡Hola Raul! Gracias por sumarte a MarketMail",
+                    body: "Estamos felices de tener a CarniApp con nosotros.",
                     buttonText: "Visitar sitio",
                     previewText: "Bienvenido a bordo"
                 }

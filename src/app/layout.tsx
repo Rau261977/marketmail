@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Sidebar } from "@/components/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MarketMail | Dashboard",
-  description: "Enterprise Email Marketing System",
+  title: "MarketMail | Enterprise Email Marketing",
+  description: "Modern Email Marketing for Modern Businesses",
 };
 
 export default function RootLayout({
@@ -18,12 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex h-screen overflow-hidden">
-          <Sidebar />
-          <main className="flex-1 overflow-y-auto bg-[#0a0a0c] p-8">
-            {children}
-          </main>
-        </div>
+        {children}
       </body>
     </html>
   );
