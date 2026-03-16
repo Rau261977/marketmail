@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     const emailProps = {
         name: lead.name || 'Amigo',
         businessName: fromName || 'CarniApp',
-        link: content.buttonUrl || process.env.NEXT_PUBLIC_APP_URL || 'https://carniapp.com',
+        link: content.buttonUrl || 'https://carniapp.com',
         primaryColor: brandingPrimaryColor || '#7c3aed',
         logoUrl: brandingLogoUrl || undefined,
         message: content.body || undefined,

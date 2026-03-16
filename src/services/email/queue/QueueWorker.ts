@@ -87,7 +87,7 @@ export class QueueWorker {
           businessName: settings?.fromName || 'CarniApp',
           primaryColor: settings?.brandingPrimaryColor,
           logoUrl: settings?.brandingLogoUrl,
-          link: content.buttonUrl || vars.link || 'https://carniapp.com',
+          link: content.buttonUrl || 'https://carniapp.com',
           message: content.body || undefined,
           previewText: content.previewText || undefined,
           heading: content.heading || undefined,
