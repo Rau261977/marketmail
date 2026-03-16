@@ -7,6 +7,7 @@ export async function GET(req: Request) {
   try {
     const authHeader = req.headers.get('Authorization');
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+      console.warn('[Cron] Unauthorized attempt to access process-queue');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

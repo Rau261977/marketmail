@@ -16,7 +16,8 @@ export async function POST(req: Request) {
       benefit1Description,
       benefit2Title,
       benefit2Description,
-      buttonText
+      buttonText,
+      buttonUrl
     } = await req.json();
 
     // Fetch tenant branding
@@ -41,7 +42,8 @@ export async function POST(req: Request) {
         benefit1Description,
         benefit2Title,
         benefit2Description,
-        buttonText
+        buttonText,
+        link: buttonUrl
       })
     );
 

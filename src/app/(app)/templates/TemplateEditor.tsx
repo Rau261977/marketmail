@@ -18,6 +18,7 @@ export default function TemplateEditor({ template }: { template: any }) {
   const [benefit2Title, setBenefit2Title] = useState(content.benefit2Title || "Envío Rápido");
   const [benefit2Description, setBenefit2Description] = useState(content.benefit2Description || "Directo a tu puerta en el menor tiempo.");
   const [buttonText, setButtonText] = useState(content.buttonText || "Comenzar ahora");
+  const [buttonUrl, setButtonUrl] = useState(content.buttonUrl || "https://carniapp.com");
 
   const [loading, setLoading] = useState(false);
   const [previewHtml, setPreviewHtml] = useState("");
@@ -41,7 +42,8 @@ export default function TemplateEditor({ template }: { template: any }) {
           benefit1Description,
           benefit2Title,
           benefit2Description,
-          buttonText
+          buttonText,
+          buttonUrl
         })
       });
       const data = await res.json();
@@ -72,7 +74,8 @@ export default function TemplateEditor({ template }: { template: any }) {
           benefit1Description,
           benefit2Title,
           benefit2Description,
-          buttonText
+          buttonText,
+          buttonUrl
         })
       });
       if (res.ok) {
@@ -210,16 +213,26 @@ export default function TemplateEditor({ template }: { template: any }) {
                   </div>
                 </div>
               </div>
-
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-300">Texto del Botón</label>
+                <input
+                  type="text"
+                  value={buttonText}
+                  onChange={(e) => setButtonText(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-white"
+                  placeholder="Ej: Comenzar ahora"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-300">Link del Botón</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    value={buttonText}
-                    onChange={(e) => setButtonText(e.target.value)}
+                    value={buttonUrl}
+                    onChange={(e) => setButtonUrl(e.target.value)}
                     className="flex-1 bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-white"
-                    placeholder="Ej: Comenzar ahora"
+                    placeholder="Ej: https://carniapp.com"
                   />
                   <button 
                     onClick={fetchPreview}

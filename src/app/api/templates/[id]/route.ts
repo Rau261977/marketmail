@@ -37,7 +37,8 @@ export async function PUT(
       benefit1Description,
       benefit2Title,
       benefit2Description,
-      buttonText
+      buttonText,
+      buttonUrl
     } = body;
 
     const template = await prisma.emailTemplate.update({
@@ -52,7 +53,8 @@ export async function PUT(
           benefit1Description,
           benefit2Title,
           benefit2Description,
-          buttonText
+          buttonText,
+          buttonUrl
         },
       },
     });
