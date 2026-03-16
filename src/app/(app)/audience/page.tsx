@@ -42,7 +42,7 @@ export default async function AudiencePage() {
 
       <div className="flex gap-4 items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
           <input 
             type="text" 
             placeholder="Buscar contactos..." 
@@ -87,13 +87,13 @@ export default async function AudiencePage() {
                     {lead.unsubscribedAt ? 'Baja' : 'Activo'}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-sm text-slate-500">
+                <td className="px-6 py-4 text-sm text-slate-400">
                   {new Date(lead.createdAt).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-2">
                     {templateId && <SendNowButton leadId={lead.id} templateId={templateId} />}
-                    <button className="p-2 text-slate-500 hover:text-slate-200 transition-colors">
+                    <button className="p-2 text-slate-400 hover:text-slate-200 transition-colors">
                         <MoreHorizontal size={18} />
                     </button>
                   </div>

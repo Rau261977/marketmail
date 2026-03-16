@@ -77,7 +77,7 @@ export default async function CampaignsPage() {
               <stat.icon size={20} />
             </div>
             <div>
-              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">{stat.label}</p>
+              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">{stat.label}</p>
               <p className="text-xl font-bold">{stat.count}</p>
             </div>
           </div>
@@ -99,7 +99,7 @@ export default async function CampaignsPage() {
                 </div>
                 <div>
                   <h4 className="font-semibold text-slate-200">{camp.name}</h4>
-                  <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
+                  <div className="flex items-center gap-3 mt-1 text-xs text-slate-400">
                     <span className="flex items-center gap-1"><Mail size={12}/> {camp.template.slug}</span>
                     <span className="flex items-center gap-1"><Clock size={12}/> {camp.scheduledAt ? new Date(camp.scheduledAt).toLocaleString() : 'Not scheduled'}</span>
                   </div>

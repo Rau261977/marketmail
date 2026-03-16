@@ -258,7 +258,7 @@ export default function TemplateEditor({ template }: { template: any }) {
         {showPreview && (
           <div className="glass-card p-0 flex flex-col relative bg-slate-900 overflow-hidden">
             <div className="p-4 border-b border-white/5 bg-white/[0.02] flex justify-between items-center">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Vista Previa Profesional</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Vista Previa Profesional</span>
               <div className="flex gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-rose-500/50" />
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-500/50" />

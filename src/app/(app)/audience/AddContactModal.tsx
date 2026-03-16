@@ -46,7 +46,7 @@ export function AddContactModal({ isOpen, onClose }: { isOpen: boolean; onClose:
       <div className="glass-card w-full max-w-md relative animate-in zoom-in-95 duration-300">
         <button 
           onClick={onClose}
-          className="absolute right-4 top-4 text-slate-500 hover:text-slate-200 transition-colors"
+          className="absolute right-4 top-4 text-slate-400 hover:text-slate-200 transition-colors"
         >
           <X size={20} />
         </button>

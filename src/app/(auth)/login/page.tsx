@@ -31,15 +31,15 @@ export default function LoginPage() {
             M
           </div>
           <h1 className="text-3xl font-bold tracking-tight">MarketMail</h1>
-          <p className="text-slate-500 mt-2">Bienvenido de nuevo. Ingresa tus datos.</p>
+          <p className="text-slate-400 mt-2">Bienvenido de nuevo. Ingresa tus datos.</p>
         </div>
 
         <div className="glass-card p-8 border-white/10 shadow-2xl">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Email</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Email</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                 <input 
                   required
                   type="email" 
@@ -51,11 +51,11 @@ export default function LoginPage() {
 
             <div className="space-y-2">
               <div className="flex justify-between items-center px-1">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Contraseña</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Contraseña</label>
                 <button type="button" className="text-xs text-violet-400 hover:text-violet-300 transition-colors">¿Olvidaste tu contraseña?</button>
               </div>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                 <input 
                   required
                   type={showPassword ? "text" : "password"} 
@@ -65,7 +65,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -108,10 +108,11 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <p className="text-center text-slate-500 text-sm mt-8">
+        <p className="text-center text-slate-400 text-sm mt-8">
           ¿No tienes una cuenta? <Link href="/login" className="text-violet-400 font-semibold hover:text-violet-300 transition-colors">Empieza gratis ahora</Link>
         </p>
       </div>
     </div>
   );
 }
+

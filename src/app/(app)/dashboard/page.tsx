@@ -113,7 +113,7 @@ export default async function Dashboard() {
               </h3>
             </div>
             <div className="flex-1 flex items-center justify-center border-t border-white/5 border-dashed">
-              <p className="text-slate-500 text-sm">Visualización de analíticas en desarrollo.</p>
+              <p className="text-slate-400 text-sm">Visualización de analíticas en desarrollo.</p>
             </div>
           </div>
         </div>
@@ -132,12 +132,12 @@ export default async function Dashboard() {
                     <p className="text-sm font-medium text-slate-200 truncate">
                       {log.text}
                     </p>
-                    <p className="text-xs text-slate-500 mt-0.5">{log.time}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">{log.time}</p>
                   </div>
                   <ExternalLink size={14} className="text-slate-600 group-hover:text-slate-400" />
                 </div>
               )) : (
-                <p className="text-sm text-slate-500 text-center py-4">Sin actividad reciente.</p>
+                <p className="text-sm text-slate-400 text-center py-4">Sin actividad reciente.</p>
               )}
             </div>
             <Link 

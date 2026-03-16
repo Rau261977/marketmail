@@ -36,8 +36,9 @@ export default function LandingPage() {
           </div>
         </div>
       </nav>
-
-      {/* Hero Section */}
+      
+      <main>
+        {/* Hero Section */}
       <section className="relative pt-40 pb-32 overflow-hidden">
         {/* Background Gradients */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-violet-600/20 blur-[120px] rounded-full -z-10 opacity-50" />
@@ -77,7 +78,7 @@ export default function LandingPage() {
           ].map((stat) => (
             <div key={stat.label}>
               <div className="text-3xl font-bold mb-1">{stat.value}</div>
-              <div className="text-sm text-slate-500 font-medium">{stat.label}</div>
+              <div className="text-sm text-slate-400 font-medium">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -123,7 +124,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="py-12 border-t border-white/5 text-center text-slate-500 text-sm">
+      </main>
+
+      <footer className="py-12 border-t border-white/5 text-center text-slate-400 text-sm">
         <p>© 2026 MarketMail. All rights reserved.</p>
       </footer>
     </div>

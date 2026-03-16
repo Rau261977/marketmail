@@ -38,8 +38,8 @@ export default async function EmailsPage() {
 
       <div className="glass-card p-0 overflow-hidden">
         <div className="p-6 border-b border-white/5 flex flex-col md:flex-row gap-4 justify-between items-center bg-white/[0.02]">
-          <div className="relative w-full md:w-96">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+            <div className="relative w-full md:w-96">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input 
               type="text" 
               placeholder="Buscar destinatario o asunto..." 
@@ -56,10 +56,10 @@ export default async function EmailsPage() {
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-white/5 bg-white/[0.01]">
-                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Destinatario</th>
-                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Asunto</th>
-                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Estado</th>
-                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Fecha</th>
+                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Destinatario</th>
+                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Asunto</th>
+                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Estado</th>
+                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Fecha</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -69,7 +69,7 @@ export default async function EmailsPage() {
                     <td className="px-6 py-4">
                       <div className="flex flex-col">
                         <span className="text-sm font-medium text-slate-200">{log.lead.name || 'Sin nombre'}</span>
-                        <span className="text-xs text-slate-500">{log.lead.email}</span>
+                        <span className="text-xs text-slate-400">{log.lead.email}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-slate-400">
@@ -89,7 +89,7 @@ export default async function EmailsPage() {
                         </div>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-500 tabular-nums">
+                    <td className="px-6 py-4 text-sm text-slate-400 tabular-nums">
                       {new Date(log.createdAt).toLocaleString('es-ES', {
                         day: '2-digit',
                         month: 'short',
@@ -104,9 +104,9 @@ export default async function EmailsPage() {
                   <td colSpan={4} className="px-6 py-12 text-center">
                     <div className="flex flex-col items-center gap-3">
                       <div className="p-4 bg-white/5 rounded-full">
-                        <Mail size={32} className="text-slate-600" />
+                        <Mail size={32} className="text-slate-400" />
                       </div>
-                      <p className="text-slate-500 text-sm">No hay correos enviados todavía.</p>
+                      <p className="text-slate-400 text-sm">No hay correos enviados todavía.</p>
                       <Link href="/audience" className="text-sm text-violet-400 hover:text-violet-300 transition-colors">
                         Ir a Audiencia para enviar un correo
                       </Link>

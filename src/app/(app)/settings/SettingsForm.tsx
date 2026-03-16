@@ -124,7 +124,7 @@ export function SettingsForm({ initialData }: { initialData: any }) {
                 </div>
               )}
             </div>
-            <div className="flex items-start gap-2 text-[11px] text-slate-500 leading-tight">
+            <div className="flex items-start gap-2 text-[11px] text-slate-400 leading-tight">
               <Info size={14} className="mt-0.5 shrink-0 text-violet-500" />
               <p>
                 <strong>Tip de Calidad:</strong> Para que tu logo se vea nítido en pantallas modernas (Retina), usa una imagen de <strong>240px x 240px</strong> (o superior). El sistema lo ajustará automáticamente para que se vea perfecto.
@@ -143,7 +143,7 @@ export function SettingsForm({ initialData }: { initialData: any }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-white/5 p-4 rounded-xl border border-white/5 hover:border-violet-500/30 transition-colors">
                 <p className="text-xs font-bold text-slate-200 mb-1">Opción Rápida: Gravatar</p>
-                <p className="text-[11px] text-slate-500 mb-3">Asocia tu logo al email remitente ({formData.fromEmail || 'tu-correo@empresa.com'}).</p>
+                <p className="text-[11px] text-slate-400 mb-3">Asocia tu logo al email remitente ({formData.fromEmail || 'tu-correo@empresa.com'}).</p>
                 <a 
                   href="https://es.gravatar.com/" 
                   target="_blank" 
@@ -155,7 +155,7 @@ export function SettingsForm({ initialData }: { initialData: any }) {
               </div>
               <div className="bg-white/5 p-4 rounded-xl border border-white/5 hover:border-violet-500/30 transition-colors">
                 <p className="text-xs font-bold text-slate-200 mb-1">Opción Pro: BIMI</p>
-                <p className="text-[11px] text-slate-500 mb-3">Estándar oficial que muestra tu logo verificado junto a tus correos.</p>
+                <p className="text-[11px] text-slate-400 mb-3">Estándar oficial que muestra tu logo verificado junto a tus correos.</p>
                 <a 
                   href="https://bimigroup.org/" 
                   target="_blank" 
@@ -198,3 +198,4 @@ export function SettingsForm({ initialData }: { initialData: any }) {
     </form>
   );
 }
+

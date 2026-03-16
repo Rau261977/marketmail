@@ -60,16 +60,16 @@ export default async function TemplatesPage() {
                   <p className="text-sm text-slate-400 mt-1 line-clamp-1">{template.subject}</p>
                 </div>
                 <div className="flex gap-1">
-                   <button className="p-1.5 text-slate-500 hover:text-slate-200 transition-colors">
+                   <button className="p-1.5 text-slate-400 hover:text-slate-200 transition-colors">
                     <Copy size={16} />
                   </button>
-                  <button className="p-1.5 text-slate-500 hover:text-rose-400 transition-colors">
+                  <button className="p-1.5 text-slate-400 hover:text-rose-400 transition-colors">
                     <Trash2 size={16} />
                   </button>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
-                <span className="text-xs text-slate-500">Actualizado el {new Date(template.updatedAt).toLocaleDateString()}</span>
+                <span className="text-xs text-slate-400">Actualizado el {new Date(template.updatedAt).toLocaleDateString()}</span>
                 <span className="text-[10px] uppercase font-bold tracking-wider text-violet-400/70 bg-violet-400/5 px-2 py-0.5 rounded">Activa</span>
               </div>
             </div>
@@ -79,7 +79,7 @@ export default async function TemplatesPage() {
         {/* Empty State / Create New Card */}
         <button className="border-2 border-dashed border-white/5 rounded-2xl p-8 flex flex-col items-center justify-center gap-4 hover:border-violet-500/20 hover:bg-violet-500/[0.02] transition-all group min-h-[300px]">
           <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-violet-500/20 transition-colors">
-            <Plus className="text-slate-500 group-hover:text-violet-400" />
+            <Plus className="text-slate-400 group-hover:text-violet-400" />
           </div>
           <p className="text-sm font-medium text-slate-400 group-hover:text-slate-200">Nueva plantilla</p>
         </button>
