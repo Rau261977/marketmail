@@ -46,7 +46,6 @@ export const Layout = ({
                 <Img
                   src={logoUrl}
                   width="120"
-                  height="120"
                   alt={businessName}
                   style={logo}
                 />
