@@ -39,17 +39,32 @@ export const WelcomeEmail = ({
   buttonText = "Comenzar ahora",
   trackingId,
 }: WelcomeEmailProps) => {
+  const replacePlaceholders = (text: string | undefined) => {
+    if (!text) return text;
+    return text
+      .replace(/{{nombre}}/g, name)
+      .replace(/{{name}}/g, name);
+  };
+
+  const finalHeading = replacePlaceholders(heading) || `¡Hola, ${name}!`;
+  const finalMessage = replacePlaceholders(message);
+  const finalPreviewText = replacePlaceholders(previewText) || `¡Bienvenido a ${businessName}!`;
+  const b1Title = replacePlaceholders(benefit1Title);
+  const b1Desc = replacePlaceholders(benefit1Description);
+  const b2Title = replacePlaceholders(benefit2Title);
+  const b2Desc = replacePlaceholders(benefit2Description);
+
   return (
     <Layout
-      previewText={previewText || `¡Bienvenido a ${businessName}!`}
-      heading={heading || `¡Hola, ${name}!`}
+      previewText={finalPreviewText}
+      heading={finalHeading}
       businessName={businessName}
       primaryColor={primaryColor}
       logoUrl={logoUrl ?? undefined}
       trackingId={trackingId}
     >
-      {message ? (
-        <Text style={paragraph}>{message}</Text>
+      {finalMessage ? (
+        <Text style={paragraph}>{finalMessage}</Text>
       ) : (
         <Text style={paragraph}>
           Estamos encantados de tenerte con nosotros en <strong>{businessName}</strong>. 
@@ -60,12 +75,12 @@ export const WelcomeEmail = ({
       <Section style={benefitSection}>
         <Row>
           <Column style={benefitItem}>
-            <Text style={benefitTitle}>{benefit1Title}</Text>
-            <Text style={benefitText}>{benefit1Description}</Text>
+            <Text style={benefitTitle}>{b1Title || benefit1Title}</Text>
+            <Text style={benefitText}>{b1Desc || benefit1Description}</Text>
           </Column>
           <Column style={benefitItem}>
-            <Text style={benefitTitle}>{benefit2Title}</Text>
-            <Text style={benefitText}>{benefit2Description}</Text>
+            <Text style={benefitTitle}>{b2Title || benefit2Title}</Text>
+            <Text style={benefitText}>{b2Desc || benefit2Description}</Text>
           </Column>
         </Row>
       </Section>
