@@ -161,6 +161,7 @@ model EmailLog {
   resendId   String?  @unique @map("resend_id")
   status     String
   openedAt   DateTime? @map("opened_at")
+  clickedAt  DateTime? @map("clicked_at")
   createdAt  DateTime @default(now()) @map("created_at")
 
   tenant   Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)

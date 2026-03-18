@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { Mail, CheckCircle2, XCircle, Clock, Search, Filter } from "lucide-react";
+import { Mail, CheckCircle2, XCircle, Clock, Search, Filter, Eye, MousePointer2 } from "lucide-react";
 import Link from "next/link";
 
 async function getEmailLogs() {
@@ -21,18 +21,34 @@ export default async function EmailsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
         <div className="glass-card border-emerald-500/20">
           <p className="text-slate-400 text-sm">Entregados</p>
           <h3 className="text-2xl font-bold text-emerald-400">{logs.filter(l => l.status === 'sent').length}</h3>
         </div>
-        <div className="glass-card border-rose-500/20">
-          <p className="text-slate-400 text-sm">Fallidos</p>
-          <h3 className="text-2xl font-bold text-rose-400">{logs.filter(l => l.status === 'failed').length}</h3>
+        <div className="glass-card border-violet-500/20">
+          <p className="text-slate-400 text-sm">Aperturas</p>
+          <h3 className="text-2xl font-bold text-violet-400">{logs.filter(l => l.openedAt !== null).length}</h3>
         </div>
-        <div className="glass-card">
-          <p className="text-slate-400 text-sm">Total Intentos</p>
-          <h3 className="text-2xl font-bold">{logs.length}</h3>
+        <div className="glass-card border-blue-500/20">
+          <p className="text-slate-400 text-sm">Tasa de Apertura</p>
+          <h3 className="text-2xl font-bold text-blue-400">
+            {logs.filter(l => l.status === 'sent').length > 0 
+              ? ((logs.filter(l => l.openedAt !== null).length / logs.filter(l => l.status === 'sent').length) * 100).toFixed(1) 
+              : 0}%
+          </h3>
+        </div>
+        <div className="glass-card border-amber-500/20">
+          <p className="text-slate-400 text-sm">Clics</p>
+          <h3 className="text-2xl font-bold text-amber-400">{logs.filter(l => l.clickedAt !== null).length}</h3>
+        </div>
+        <div className="glass-card border-pink-500/20">
+          <p className="text-slate-400 text-sm">CTR</p>
+          <h3 className="text-2xl font-bold text-pink-400">
+            {logs.filter(l => l.status === 'sent').length > 0 
+              ? ((logs.filter(l => l.clickedAt !== null).length / logs.filter(l => l.status === 'sent').length) * 100).toFixed(1) 
+              : 0}%
+          </h3>
         </div>
       </div>
 
@@ -58,6 +74,8 @@ export default async function EmailsPage() {
               <tr className="border-b border-white/5 bg-white/[0.01]">
                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Destinatario</th>
                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Asunto</th>
+                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Abierto</th>
+                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Clics</th>
                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Estado</th>
                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Fecha</th>
               </tr>
@@ -75,6 +93,46 @@ export default async function EmailsPage() {
                     <td className="px-6 py-4 text-sm text-slate-400">
                       {/* Simulating a subject since it might not be in the log explicitly yet */}
                       Confirmación de Suscripción
+                    </td>
+                    <td className="px-6 py-4">
+                      {log.openedAt ? (
+                        <div className="flex flex-col">
+                          <div className="flex items-center gap-2 text-violet-400 text-xs font-medium bg-violet-500/10 w-fit px-2 py-1 rounded-full border border-violet-500/20">
+                            <Eye size={14} />
+                            Abierto
+                          </div>
+                          <span className="text-[10px] text-slate-500 mt-1 ml-1 tabular-nums">
+                            {new Date(log.openedAt).toLocaleString('es-ES', {
+                              day: '2-digit',
+                              month: 'short',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-slate-500 italic ml-2">No abierto</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      {log.clickedAt ? (
+                        <div className="flex flex-col">
+                          <div className="flex items-center gap-2 text-amber-400 text-xs font-medium bg-amber-500/10 w-fit px-2 py-1 rounded-full border border-amber-500/20">
+                            <MousePointer2 size={14} />
+                            Click
+                          </div>
+                          <span className="text-[10px] text-slate-500 mt-1 ml-1 tabular-nums">
+                            {new Date(log.clickedAt).toLocaleString('es-ES', {
+                              day: '2-digit',
+                              month: 'short',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-slate-500 italic ml-2">Sin clics</span>
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       {log.status === 'sent' ? (
@@ -101,7 +159,7 @@ export default async function EmailsPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center">
+                  <td colSpan={6} className="px-6 py-12 text-center">
                     <div className="flex flex-col items-center gap-3">
                       <div className="p-4 bg-white/5 rounded-full">
                         <Mail size={32} className="text-slate-400" />

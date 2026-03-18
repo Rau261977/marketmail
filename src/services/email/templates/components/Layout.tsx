@@ -78,7 +78,8 @@ export const Layout = ({
                 src={`${appUrl}/api/t/${trackingId}`}
                 width="1"
                 height="1"
-                style={{ display: "none" }}
+                alt=""
+                style={{ opacity: 0, height: '1px', width: '1px' }}
               />
             )}
           </Container>

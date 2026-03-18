@@ -71,7 +71,13 @@ export const WelcomeEmail = ({
       </Section>
 
       <Section style={buttonContainer}>
-        <Button href={link} primaryColor={primaryColor}>
+        <Button 
+          href={trackingId 
+            ? `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/c/${trackingId}?to=${encodeURIComponent(link)}` 
+            : link
+          } 
+          primaryColor={primaryColor}
+        >
           {buttonText}
         </Button>
       </Section>
