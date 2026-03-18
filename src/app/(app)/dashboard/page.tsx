@@ -13,6 +13,7 @@ import {
 import Link from "next/link";
 import { MetricCard } from "@/components/MetricCard";
 import { prisma } from "@/lib/db";
+import TimeAgo from "@/components/ui/TimeAgo";
 
 async function getStats() {
   const [totalLeads, totalSent, totalTemplates, totalOpened, recentLogs, userResult] = await Promise.all([
@@ -31,15 +32,6 @@ async function getStats() {
   const user = userResult || { name: 'Arquitecto' };
   const openRate = totalSent > 0 ? (totalOpened / totalSent) * 100 : 0;
 
-  // Handle pluralization and formatting for time ago safely for this demo
-  const formatTimeAgo = (date: Date) => {
-    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
-    if (seconds < 60) return "hace unos segundos";
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `hace ${minutes} minuto${minutes > 1 ? 's' : ''}`;
-    const hours = Math.floor(minutes / 60);
-    return `hace ${hours} hora${hours > 1 ? 's' : ''}`;
-  };
 
   return {
     totalLeads: totalLeads.toLocaleString(),
@@ -50,7 +42,7 @@ async function getStats() {
     recentLogs: recentLogs.map(log => ({
       id: log.id,
       text: `Correo enviado a ${log.lead.name || log.lead.email}`,
-      time: formatTimeAgo(log.createdAt)
+      createdAt: log.createdAt
     })),
     userName: user.name || 'Arquitecto'
   };
@@ -132,7 +124,7 @@ export default async function Dashboard() {
                     <p className="text-sm font-medium text-slate-200 truncate">
                       {log.text}
                     </p>
-                    <p className="text-xs text-slate-400 mt-0.5">{log.time}</p>
+                    <p className="text-xs text-slate-400 mt-0.5"><TimeAgo date={log.createdAt} /></p>
                   </div>
                   <ExternalLink size={14} className="text-slate-600 group-hover:text-slate-400" />
                 </div>

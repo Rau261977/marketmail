@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { ProcessQueueButton } from "@/components/ProcessQueueButton";
+import FormattedDate from "@/components/ui/FormattedDate";
 
 async function getCampaigns() {
   return await prisma.emailCampaign.findMany({
@@ -101,7 +102,7 @@ export default async function CampaignsPage() {
                   <h4 className="font-semibold text-slate-200">{camp.name}</h4>
                   <div className="flex items-center gap-3 mt-1 text-xs text-slate-400">
                     <span className="flex items-center gap-1"><Mail size={12}/> {camp.template.slug}</span>
-                    <span className="flex items-center gap-1"><Clock size={12}/> {camp.scheduledAt ? new Date(camp.scheduledAt).toLocaleString() : 'Not scheduled'}</span>
+                    <span className="flex items-center gap-1"><Clock size={12}/> {camp.scheduledAt ? <FormattedDate date={camp.scheduledAt} /> : 'Not scheduled'}</span>
                   </div>
                 </div>
               </div>

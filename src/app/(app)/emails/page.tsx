@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { prisma } from "@/lib/db";
 import { Mail, CheckCircle2, XCircle, Clock, Search, Filter, Eye, MousePointer2 } from "lucide-react";
 import Link from "next/link";
+import FormattedDate from "@/components/ui/FormattedDate";
 
 async function getEmailLogs() {
   return await prisma.emailLog.findMany({
@@ -104,12 +105,7 @@ export default async function EmailsPage() {
                             Abierto
                           </div>
                           <span className="text-[10px] text-slate-500 mt-1 ml-1 tabular-nums">
-                            {new Date(log.openedAt).toLocaleString('es-ES', {
-                              day: '2-digit',
-                              month: 'short',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
+                            <FormattedDate date={log.openedAt} />
                           </span>
                         </div>
                       ) : (
@@ -124,12 +120,7 @@ export default async function EmailsPage() {
                             Click
                           </div>
                           <span className="text-[10px] text-slate-500 mt-1 ml-1 tabular-nums">
-                            {new Date(log.clickedAt).toLocaleString('es-ES', {
-                              day: '2-digit',
-                              month: 'short',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
+                            <FormattedDate date={log.clickedAt} />
                           </span>
                         </div>
                       ) : (
@@ -150,12 +141,7 @@ export default async function EmailsPage() {
                       )}
                     </td>
                     <td className="px-6 py-4 text-sm text-slate-400 tabular-nums">
-                      {new Date(log.createdAt).toLocaleString('es-ES', {
-                        day: '2-digit',
-                        month: 'short',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
+                      <FormattedDate date={log.createdAt} />
                     </td>
                   </tr>
                 ))
