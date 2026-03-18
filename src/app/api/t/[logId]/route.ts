@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { isBot } from "@/lib/bot-detection";
 
 export async function GET(
   request: Request,
@@ -10,18 +11,23 @@ export async function GET(
 
     console.log(`[Tracking] Pixel requested for log: ${logId}`);
 
-    // Record the open if it's the first time using raw query to bypass client validation issues
-    const result = await prisma.$executeRaw`
-      UPDATE "email_logs" 
-      SET "opened_at" = ${new Date()} 
-      WHERE "id" = ${logId}::uuid AND "opened_at" IS NULL
-    `.catch(err => {
-        console.error(`[Tracking] Database error for log ${logId}:`, err);
-        return 0;
-    });
+    // Check if the request is from a bot/pre-fetcher
+    if (isBot(request)) {
+        console.log(`[Tracking] Bot/Pre-fetcher detected for log ${logId}, skipping recording.`);
+    } else {
+        // Record the open if it's the first time using raw query to bypass client validation issues
+        const result = await prisma.$executeRaw`
+          UPDATE "email_logs" 
+          SET "opened_at" = ${new Date()} 
+          WHERE "id" = ${logId}::uuid AND "opened_at" IS NULL
+        `.catch(err => {
+            console.error(`[Tracking] Database error for log ${logId}:`, err);
+            return 0;
+        });
 
-    if (result > 0) {
-      console.log(`[Tracking] Successfully recorded open for log: ${logId}`);
+        if (result > 0) {
+          console.log(`[Tracking] Successfully recorded open for log: ${logId}`);
+        }
     }
 
     // Return a 1x1 transparent GIF
