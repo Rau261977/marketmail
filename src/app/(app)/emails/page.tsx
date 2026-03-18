@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { prisma } from "@/lib/db";
 import { Mail, CheckCircle2, XCircle, Clock, Search, Filter, Eye, MousePointer2 } from "lucide-react";
 import Link from "next/link";
