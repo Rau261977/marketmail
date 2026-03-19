@@ -104,9 +104,15 @@ export class QueueWorker {
         throw new Error(`Template slug ${template?.slug} not supported or template missing`);
       }
 
+      const recipientName = lead.name || vars.name || "";
+      const rawSubject = template?.subject || item.subject || 'Notification';
+      const finalSubject = rawSubject
+        .split('{{nombre}}').join(recipientName)
+        .split('{{name}}').join(recipientName);
+
       const payload: EmailPayload = {
         to: lead.email,
-        subject: template?.subject || item.subject || 'Notification',
+        subject: finalSubject,
         template: templateElement,
         from: settings ? `"${settings.fromName}" <${settings.fromEmail}>` : undefined,
         replyTo: settings?.replyTo || undefined,
