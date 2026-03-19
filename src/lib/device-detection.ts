@@ -1,35 +1,46 @@
 /**
- * Simple utility to detect device type from User-Agent.
+ * Comprehensive utility to detect device type from User-Agent.
  */
 export function getDeviceType(userAgent: string | null): string {
-    if (!userAgent) return "unknown";
+    if (!userAgent) return "other";
     
     const ua = userAgent.toLowerCase();
     
-    // Mobile detection
-    if (
-        ua.includes("mobile") ||
-        ua.includes("android") ||
-        ua.includes("iphone") ||
-        ua.includes("ipad") ||
-        ua.includes("ipod") ||
-        ua.includes("windows phone")
-    ) {
+    // 1. Mobile & Tablet detection (more comprehensive)
+    const mobileKeywords = [
+        "mobile", "android", "iphone", "ipod", "windows phone", 
+        "opera mini", "mobi", "blackberry", "iemobile", "fennec"
+    ];
+    
+    const tabletKeywords = [
+        "ipad", "playbook", "kindle", "silk", "tablet"
+    ];
+
+    if (mobileKeywords.some(kw => ua.includes(kw))) {
+        // Special case for Android tablets (which often have "Android" but not always "Mobile")
+        if (ua.includes("android") && !ua.includes("mobile")) {
+            return "tablet";
+        }
         return "mobile";
     }
+
+    if (tabletKeywords.some(kw => ua.includes(kw))) {
+        return "tablet";
+    }
     
-    // Tablet detection (optional, could be categorized as mobile or desktop)
-    // For now, categorization as "mobile" if it contains the above keywords is fine.
-    
-    // Desktop detection
-    if (
-        ua.includes("windows") ||
-        ua.includes("macintosh") ||
-        ua.includes("linux") ||
-        ua.includes("x11")
-    ) {
+    // 2. Desktop detection
+    const desktopKeywords = [
+        "windows", "macintosh", "linux", "x11", "bsd", "solaris"
+    ];
+
+    if (desktopKeywords.some(kw => ua.includes(kw))) {
         return "desktop";
     }
     
+    // 3. Fallback for common browser engines on desktop
+    if (ua.includes("mozilla") || ua.includes("chrome") || ua.includes("safari")) {
+        return "desktop";
+    }
+
     return "other";
 }

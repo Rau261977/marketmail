@@ -7,10 +7,22 @@ import FormattedDate from "@/components/ui/FormattedDate";
 
 async function getEmailLogs() {
   try {
-    return await prisma.emailLog.findMany({
-      orderBy: { createdAt: "desc" },
-      include: { lead: true }
-    });
+    // Use raw query to bypass Prisma Client's out-of-sync model (due to EPERM during generate)
+    const logs = await prisma.$queryRaw`
+      SELECT 
+        l.id, 
+        l.status, 
+        l.device, 
+        l.opened_at as "openedAt", 
+        l.clicked_at as "clickedAt", 
+        l.created_at as "createdAt",
+        json_build_object('name', ld.name, 'email', ld.email) as lead
+      FROM email_logs l
+      JOIN leads ld ON l.lead_id = ld.id
+      ORDER BY l.created_at DESC
+      LIMIT 100
+    `;
+    return logs as any[];
   } catch (error) {
     console.error("Error fetching email logs:", error);
     return [];
@@ -122,14 +134,26 @@ export default async function EmailsPage() {
                       {/* @ts-ignore */}
                       {log.device === 'mobile' ? (
                         <div className="flex items-center gap-2 text-slate-300">
-                          <Smartphone size={16} className="text-slate-400" />
+                          <Smartphone size={16} className="text-violet-400/70" />
                           <span className="text-xs">Móvil</span>
+                        </div>
+                      /* @ts-ignore */
+                      ) : log.device === 'tablet' ? (
+                        <div className="flex items-center gap-2 text-slate-300">
+                          <Smartphone size={16} className="text-blue-400/70" />
+                          <span className="text-xs">Tablet</span>
                         </div>
                       /* @ts-ignore */
                       ) : log.device === 'desktop' ? (
                         <div className="flex items-center gap-2 text-slate-300">
-                          <Monitor size={16} className="text-slate-400" />
+                          <Monitor size={16} className="text-emerald-400/70" />
                           <span className="text-xs">PC</span>
+                        </div>
+                      /* @ts-ignore */
+                      ) : log.device === 'other' ? (
+                        <div className="flex items-center gap-2 text-slate-300">
+                          <Monitor size={16} className="text-slate-400/70" />
+                          <span className="text-xs">Otro</span>
                         </div>
                       ) : (
                         <span className="text-xs text-slate-500 italic">-</span>

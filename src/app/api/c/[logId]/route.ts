@@ -21,6 +21,8 @@ export async function GET(
         const userAgent = request.headers.get("user-agent");
         const device = getDeviceType(userAgent);
 
+        console.log(`[Click Tracking] Device detected: ${device} | UA: ${userAgent}`);
+
         // Record the click if it's the first time
         await prisma.$executeRaw`
           UPDATE "email_logs" 

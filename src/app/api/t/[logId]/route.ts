@@ -18,6 +18,8 @@ export async function GET(
     } else {
         const userAgent = request.headers.get("user-agent");
         const device = getDeviceType(userAgent);
+        
+        console.log(`[Tracking] Device detected: ${device} | UA: ${userAgent}`);
 
         // Record the open if it's the first time using raw query to bypass client validation issues
         const result = await prisma.$executeRaw`
