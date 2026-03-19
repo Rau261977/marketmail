@@ -13,7 +13,7 @@ export const Button = ({ href, children, primaryColor = "#000000" }: ButtonProps
       backgroundColor: primaryColor,
       borderRadius: "10px",
       color: "#000",
-      fontSize: "20px",
+      fontSize: "16px",
       fontWeight: "600",
       textDecoration: "none",
       textAlign: "center" as const,

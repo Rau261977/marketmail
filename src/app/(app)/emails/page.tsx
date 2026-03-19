@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { prisma } from "@/lib/db";
-import { Mail, CheckCircle2, XCircle, Clock, Search, Filter, Eye, MousePointer2 } from "lucide-react";
+import { Mail, CheckCircle2, XCircle, Clock, Search, Filter, Eye, MousePointer2, Smartphone, Monitor, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import FormattedDate from "@/components/ui/FormattedDate";
 
@@ -78,6 +78,7 @@ export default async function EmailsPage() {
                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Destinatario</th>
                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Asunto</th>
                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Abierto</th>
+                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Dispositivo</th>
                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Clics</th>
                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Estado</th>
                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Fecha</th>
@@ -110,6 +111,23 @@ export default async function EmailsPage() {
                         </div>
                       ) : (
                         <span className="text-xs text-slate-500 italic ml-2">No abierto</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      {/* @ts-ignore */}
+                      {log.device === 'mobile' ? (
+                        <div className="flex items-center gap-2 text-slate-300">
+                          <Smartphone size={16} className="text-slate-400" />
+                          <span className="text-xs">Móvil</span>
+                        </div>
+                      /* @ts-ignore */
+                      ) : log.device === 'desktop' ? (
+                        <div className="flex items-center gap-2 text-slate-300">
+                          <Monitor size={16} className="text-slate-400" />
+                          <span className="text-xs">PC</span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-slate-500 italic">-</span>
                       )}
                     </td>
                     <td className="px-6 py-4">

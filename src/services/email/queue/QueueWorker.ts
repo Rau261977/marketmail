@@ -96,7 +96,8 @@ export class QueueWorker {
           benefit2Title: content.benefit2Title || undefined,
           benefit2Description: content.benefit2Description || undefined,
           buttonText: content.buttonText || undefined,
-          trackingId: trackingId
+          trackingId: trackingId,
+          unsubscribeUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/u/${trackingId}`
         });
       }
 

@@ -20,6 +20,7 @@ interface LayoutProps {
   primaryColor?: string;
   logoUrl?: string;
   trackingId?: string;
+  unsubscribeUrl?: string;
 }
 
 export const Layout = ({
@@ -30,6 +31,7 @@ export const Layout = ({
   primaryColor = "#7c3aed", // violet-600
   logoUrl,
   trackingId,
+  unsubscribeUrl,
 }: LayoutProps) => {
   // NOTE: For images to appear in real emails, they MUST be hosted on a public URL.
   // During local development, they will only appear in the browser preview.
@@ -80,7 +82,7 @@ export const Layout = ({
                 Este correo fue enviado a través de <Link href="https://carniapp.com" style={footerLink}>CarniApp</Link>.
               </Text>
               <Text style={footerText} className="mob-font-footer">
-                Si ya no deseas recibir estos correos, puedes <Link href="{{unsubscribe_url}}" style={footerLink}>darte de baja aquí</Link>.
+                Si ya no deseas recibir estos correos, puedes <Link href={unsubscribeUrl || "https://carniapp.com/unsubscribe"} style={footerLink}>darte de baja aquí</Link>.
               </Text>
             </Section>
 

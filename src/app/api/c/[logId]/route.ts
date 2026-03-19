@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { isBot } from "@/lib/bot-detection";
+import { getDeviceType } from "@/lib/device-detection";
 
 export async function GET(
   request: Request,
@@ -17,10 +18,14 @@ export async function GET(
     if (isBot(request)) {
         console.log(`[Click Tracking] Bot/Pre-fetcher detected for log ${logId}, skipping recording.`);
     } else {
+        const userAgent = request.headers.get("user-agent");
+        const device = getDeviceType(userAgent);
+
         // Record the click if it's the first time
         await prisma.$executeRaw`
           UPDATE "email_logs" 
-          SET "clicked_at" = ${new Date()} 
+          SET "clicked_at" = ${new Date()},
+              "device" = COALESCE("device", ${device})
           WHERE "id" = ${logId}::uuid AND "clicked_at" IS NULL
         `.catch(err => {
             console.error(`[Click Tracking] Database error for log ${logId}:`, err);
@@ -29,7 +34,8 @@ export async function GET(
         // Record open as well if it hasn't been recorded (clicking imply opening)
         await prisma.$executeRaw`
           UPDATE "email_logs" 
-          SET "opened_at" = COALESCE("opened_at", ${new Date()}) 
+          SET "opened_at" = COALESCE("opened_at", ${new Date()}),
+              "device" = COALESCE("device", ${device})
           WHERE "id" = ${logId}::uuid
         `.catch(err => {
             console.error(`[Click Tracking] Database error (open sync) for log ${logId}:`, err);

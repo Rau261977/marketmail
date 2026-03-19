@@ -21,6 +21,7 @@ interface WelcomeEmailProps {
   benefit2Description?: string;
   buttonText?: string;
   trackingId?: string;
+  unsubscribeUrl?: string;
 }
 
 export const WelcomeEmail = ({
@@ -38,6 +39,7 @@ export const WelcomeEmail = ({
   benefit2Description = "Directo a tu puerta en el menor tiempo.",
   buttonText = "Comenzar ahora",
   trackingId,
+  unsubscribeUrl,
 }: WelcomeEmailProps) => {
   const replacePlaceholders = (text: string | undefined) => {
     if (!text) return text;
@@ -62,6 +64,7 @@ export const WelcomeEmail = ({
       primaryColor={primaryColor}
       logoUrl={logoUrl ?? undefined}
       trackingId={trackingId}
+      unsubscribeUrl={unsubscribeUrl}
     >
       {finalMessage ? (
         finalMessage.split('\n').map((line, i) => (
@@ -115,10 +118,14 @@ const paragraph = {
 
 const benefitSection = {
   margin: "30px 0",
+  backgroundColor: "#f0f7ff",
+  padding: "20px 10px",
+  borderRadius: "12px",
+  border: "1px solid #e0eeff",
 };
 
 const benefitItem = {
-  padding: "0 10px",
+  padding: "10px",
   textAlign: "center" as const,
 };
 

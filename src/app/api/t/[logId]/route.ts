@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { isBot } from "@/lib/bot-detection";
+import { getDeviceType } from "@/lib/device-detection";
 
 export async function GET(
   request: Request,
@@ -15,10 +16,14 @@ export async function GET(
     if (isBot(request)) {
         console.log(`[Tracking] Bot/Pre-fetcher detected for log ${logId}, skipping recording.`);
     } else {
+        const userAgent = request.headers.get("user-agent");
+        const device = getDeviceType(userAgent);
+
         // Record the open if it's the first time using raw query to bypass client validation issues
         const result = await prisma.$executeRaw`
           UPDATE "email_logs" 
-          SET "opened_at" = ${new Date()} 
+          SET "opened_at" = ${new Date()},
+              "device" = ${device}
           WHERE "id" = ${logId}::uuid AND "opened_at" IS NULL
         `.catch(err => {
             console.error(`[Tracking] Database error for log ${logId}:`, err);

@@ -19,6 +19,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing data" }, { status: 400 });
     }
 
+    if (lead.unsubscribedAt) {
+      return NextResponse.json({ error: "Lead unsubscribed" }, { status: 400 });
+    }
+
     // Direct send for "Send Now" functionality
     const emailService = new EmailService(
         process.env.RESEND_API_KEY!,
@@ -45,7 +49,8 @@ export async function POST(request: Request) {
         benefit2Title: content.benefit2Title || undefined,
         benefit2Description: content.benefit2Description || undefined,
         buttonText: content.buttonText || undefined,
-        trackingId: trackingId
+        trackingId: trackingId,
+        unsubscribeUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/u/${trackingId}`
     };
 
     const result = await emailService.sendEmail({

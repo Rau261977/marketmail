@@ -160,6 +160,7 @@ model EmailLog {
   templateId String?  @map("template_id") @db.Uuid
   resendId   String?  @unique @map("resend_id")
   status     String
+  device     String?
   openedAt   DateTime? @map("opened_at")
   clickedAt  DateTime? @map("clicked_at")
   createdAt  DateTime @default(now()) @map("created_at")
