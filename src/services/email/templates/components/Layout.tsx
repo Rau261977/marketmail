@@ -28,13 +28,14 @@ export const Layout = ({
   heading,
   businessName = "CarniApp",
   primaryColor = "#7c3aed", // violet-600
-  logoUrl = "https://carniapp.com/logo.png",
+  logoUrl,
   trackingId,
 }: LayoutProps) => {
-  // Ensure NEXT_PUBLIC_APP_URL is set to your production domain in Vercel.
-  // Emails sent to external clients need an absolute URL to reach your server.
+  // NOTE: For images to appear in real emails, they MUST be hosted on a public URL.
+  // During local development, they will only appear in the browser preview.
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  
+  const defaultHeader = `${appUrl}/email-banner.jpg`;
+
   return (
     <Html>
       <Head />
@@ -43,14 +44,14 @@ export const Layout = ({
         <Body style={main}>
           <Container style={container}>
             <Section style={logoContainer}>
-                <Img
-                  src={logoUrl}
-                  width="120"
-                  alt={businessName}
-                  style={logo}
-                />
+              <Img
+                src={defaultHeader}
+                width="600"
+                alt={businessName}
+                style={headerImage}
+              />
             </Section>
-            
+
             <Section style={content}>
               {heading && (
                 <Heading style={h1}>{heading}</Heading>
@@ -59,7 +60,7 @@ export const Layout = ({
             </Section>
 
             <Hr style={hr} />
-            
+
             <Section style={footer}>
               <Text style={footerText}>
                 © {new Date().getFullYear()} {businessName}. Todos los derechos reservados.
@@ -97,23 +98,25 @@ const main = {
 const container = {
   backgroundColor: "#ffffff",
   margin: "0 auto",
-  padding: "20px 0 48px",
-  marginBottom: "64px",
+  padding: "0 0 48px",
+  marginBottom: "32px",
   borderRadius: "8px",
   boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)",
+  maxWidth: "600px",
 };
 
 const logoContainer = {
-  padding: "32px 48px",
+  padding: "0",
 };
 
-const logo = {
+const headerImage = {
   margin: "0 auto",
   display: "block",
+  borderRadius: "8px 8px 0 0",
 };
 
 const content = {
-  padding: "0 48px",
+  padding: "0 16px",
 };
 
 const h1 = {
@@ -130,7 +133,7 @@ const hr = {
 };
 
 const footer = {
-  padding: "0 48px",
+  padding: "0 16px",
 };
 
 const footerText = {
