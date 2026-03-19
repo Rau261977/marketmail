@@ -6,10 +6,15 @@ import Link from "next/link";
 import FormattedDate from "@/components/ui/FormattedDate";
 
 async function getEmailLogs() {
-  return await prisma.emailLog.findMany({
-    orderBy: { createdAt: "desc" },
-    include: { lead: true }
-  });
+  try {
+    return await prisma.emailLog.findMany({
+      orderBy: { createdAt: "desc" },
+      include: { lead: true }
+    });
+  } catch (error) {
+    console.error("Error fetching email logs:", error);
+    return [];
+  }
 }
 
 export default async function EmailsPage() {
