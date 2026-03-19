@@ -38,7 +38,18 @@ export const Layout = ({
 
   return (
     <Html>
-      <Head />
+      <Head>
+        <style dangerouslySetInnerHTML={{
+          __html: `
+          @media only screen and (max-width: 767px) {
+            .mob-font-p { font-size: 18px !important; }
+            .mob-font-h1 { font-size: 26px !important; }
+            .mob-font-footer { font-size: 18px !important; }
+            .mob-font-benefit-title { font-size: 20px !important; }
+            .mob-font-benefit-text { font-size: 16px !important; }
+          }
+        ` }} />
+      </Head>
       <Preview>{previewText || ""}</Preview>
       <Tailwind>
         <Body style={main}>
@@ -54,7 +65,7 @@ export const Layout = ({
 
             <Section style={content}>
               {heading && (
-                <Heading style={h1}>{heading}</Heading>
+                <Heading style={h1} className="mob-font-h1">{heading}</Heading>
               )}
               {children}
             </Section>
@@ -62,13 +73,13 @@ export const Layout = ({
             <Hr style={hr} />
 
             <Section style={footer}>
-              <Text style={footerText}>
+              <Text style={footerText} className="mob-font-footer">
                 © {new Date().getFullYear()} {businessName}. Todos los derechos reservados.
               </Text>
-              <Text style={footerText}>
+              <Text style={footerText} className="mob-font-footer">
                 Este correo fue enviado a través de <Link href="https://carniapp.com" style={footerLink}>CarniApp</Link>.
               </Text>
-              <Text style={footerText}>
+              <Text style={footerText} className="mob-font-footer">
                 Si ya no deseas recibir estos correos, puedes <Link href="{{unsubscribe_url}}" style={footerLink}>darte de baja aquí</Link>.
               </Text>
             </Section>
@@ -138,7 +149,7 @@ const footer = {
 
 const footerText = {
   color: "#8898aa",
-  fontSize: "12px",
+  fontSize: "16px",
   lineHeight: "16px",
   textAlign: "center" as const,
   margin: "4px 0",

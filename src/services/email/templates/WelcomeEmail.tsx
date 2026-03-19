@@ -65,10 +65,10 @@ export const WelcomeEmail = ({
     >
       {finalMessage ? (
         finalMessage.split('\n').map((line, i) => (
-          <Text key={i} style={paragraph}>{line || <br />}</Text>
+          <Text key={i} style={paragraph} className="mob-font-p">{line || <br />}</Text>
         ))
       ) : (
-        <Text style={paragraph}>
+        <Text style={paragraph} className="mob-font-p">
           Estamos encantados de tenerte con nosotros en <strong>{businessName}</strong>. 
           Nuestra misión es brindarte la mejor calidad y servicio directamente a tu mesa.
         </Text>
@@ -77,12 +77,12 @@ export const WelcomeEmail = ({
       <Section style={benefitSection}>
         <Row>
           <Column style={benefitItem}>
-            <Text style={benefitTitle}>{b1Title || benefit1Title}</Text>
-            <Text style={benefitText}>{b1Desc || benefit1Description}</Text>
+            <Text style={benefitTitle} className="mob-font-benefit-title">{b1Title || benefit1Title}</Text>
+            <Text style={benefitText} className="mob-font-benefit-text">{b1Desc || benefit1Description}</Text>
           </Column>
           <Column style={benefitItem}>
-            <Text style={benefitTitle}>{b2Title || benefit2Title}</Text>
-            <Text style={benefitText}>{b2Desc || benefit2Description}</Text>
+            <Text style={benefitTitle} className="mob-font-benefit-title">{b2Title || benefit2Title}</Text>
+            <Text style={benefitText} className="mob-font-benefit-text">{b2Desc || benefit2Description}</Text>
           </Column>
         </Row>
       </Section>
@@ -99,7 +99,7 @@ export const WelcomeEmail = ({
         </Button>
       </Section>
 
-      <Text style={paragraph}>
+      <Text style={paragraph} className="mob-font-p">
         Si tienes alguna pregunta, no dudes en responder a este correo. ¡Estamos aquí para ayudarte!
       </Text>
     </Layout>

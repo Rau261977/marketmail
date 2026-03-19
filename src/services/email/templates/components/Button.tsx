@@ -11,9 +11,9 @@ export const Button = ({ href, children, primaryColor = "#000000" }: ButtonProps
   <ReactEmailButton
     style={{
       backgroundColor: primaryColor,
-      borderRadius: "6px",
-      color: "#fff",
-      fontSize: "16px",
+      borderRadius: "10px",
+      color: "#000",
+      fontSize: "20px",
       fontWeight: "600",
       textDecoration: "none",
       textAlign: "center" as const,
