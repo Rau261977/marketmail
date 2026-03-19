@@ -89,3 +89,30 @@ export function isBot(request: Request): boolean {
 
     return false;
 }
+
+/**
+ * A more lenient version of isBot specifically for click tracking.
+ * Real users click links; bots mostly just scan them.
+ * We only block known malicious or system crawlers here.
+ */
+export function isSafeClick(request: Request): boolean {
+    const ua = request.headers.get('user-agent')?.toLowerCase() || '';
+    
+    // Always allow if it looks like a real browser engine
+    if (ua.includes('mozilla/') && (ua.includes('applewebkit') || ua.includes('gecko') || ua.includes('chrome/'))) {
+        return true;
+    }
+
+    // Only block if it's explicitly a bot keyword from the more restrictive list
+    // but excluding some that might be from mobile apps
+    const restrictedBots = [
+        'googlebot', 'bingbot', 'yandexbot', 'duckduckbot', 'slurp', 
+        'crawler', 'spider', 'headless', 'phantomjs', 'puppeteer', 'selenium'
+    ];
+
+    if (restrictedBots.some(bot => ua.includes(bot))) {
+        return false;
+    }
+
+    return true;
+}

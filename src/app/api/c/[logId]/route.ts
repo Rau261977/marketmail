@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { isBot } from "@/lib/bot-detection";
+import { isBot, isSafeClick } from "@/lib/bot-detection";
 import { getDeviceType } from "@/lib/device-detection";
 
 export async function GET(
@@ -12,13 +12,13 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const targetUrl = searchParams.get("to") || "https://carniapp.com";
 
-    console.log(`[Click Tracking] Click recorded for log: ${logId}, redirecting to: ${targetUrl}`);
+    console.log(`[Click Tracking] Request received for log: ${logId}`);
+    const userAgent = request.headers.get("user-agent") || "";
 
-    // Check if the request is from a bot/pre-fetcher
-    if (isBot(request)) {
-        console.log(`[Click Tracking] Bot/Pre-fetcher detected for log ${logId}, skipping recording.`);
+    // Check if the request is from a safe click (less restrictive than isBot)
+    if (!isSafeClick(request)) {
+        console.log(`[Click Tracking] Bot/Scanner detected for log ${logId}, skipping recording. UA: ${userAgent}`);
     } else {
-        const userAgent = request.headers.get("user-agent");
         const device = getDeviceType(userAgent);
 
         console.log(`[Click Tracking] Device detected: ${device} | UA: ${userAgent}`);

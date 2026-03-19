@@ -12,11 +12,12 @@ export async function GET(
 
     console.log(`[Tracking] Pixel requested for log: ${logId}`);
 
+    const userAgent = request.headers.get("user-agent") || "";
+
     // Check if the request is from a bot/pre-fetcher
     if (isBot(request)) {
-        console.log(`[Tracking] Bot/Pre-fetcher detected for log ${logId}, skipping recording.`);
+        console.log(`[Tracking] Bot/Pre-fetcher detected for log ${logId}, skipping recording. UA: ${userAgent}`);
     } else {
-        const userAgent = request.headers.get("user-agent");
         const device = getDeviceType(userAgent);
         
         console.log(`[Tracking] Device detected: ${device} | UA: ${userAgent}`);
