@@ -64,7 +64,9 @@ export const WelcomeEmail = ({
       trackingId={trackingId}
     >
       {finalMessage ? (
-        <Text style={paragraph}>{finalMessage}</Text>
+        finalMessage.split('\n').map((line, i) => (
+          <Text key={i} style={paragraph}>{line || <br />}</Text>
+        ))
       ) : (
         <Text style={paragraph}>
           Estamos encantados de tenerte con nosotros en <strong>{businessName}</strong>. 
@@ -108,7 +110,7 @@ const paragraph = {
   fontSize: "16px",
   lineHeight: "26px",
   color: "#484848",
-  textAlign: "center" as const,
+  textAlign: "left" as const,
 };
 
 const benefitSection = {
