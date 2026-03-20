@@ -21,6 +21,7 @@ export const Button = ({ href, children, primaryColor = "#000000" }: ButtonProps
       padding: "12px 20px",
       margin: "20px 0",
     }}
+    className="mob-btn"
     href={href}
   >
     {children}

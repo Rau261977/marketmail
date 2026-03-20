@@ -49,6 +49,7 @@ export const Layout = ({
             .mob-font-footer { font-size: 18px !important; }
             .mob-font-benefit-title { font-size: 20px !important; }
             .mob-font-benefit-text { font-size: 16px !important; }
+            .mob-btn { font-size: 18px !important; padding: 17px 20px !important; }
           }
         ` }} />
       </Head>
