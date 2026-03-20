@@ -23,21 +23,27 @@ export async function GET(
 
         console.log(`[Click Tracking] Device detected: ${device} | UA: ${userAgent}`);
 
-        // Record the click if it's the first time
+        // Record the click. Update device if it's currently NULL or 'other'
         await prisma.$executeRaw`
           UPDATE "email_logs" 
-          SET "clicked_at" = ${new Date()},
-              "device" = COALESCE("device", ${device})
-          WHERE "id" = ${logId}::uuid AND "clicked_at" IS NULL
+          SET "clicked_at" = COALESCE("clicked_at", ${new Date()}),
+              "device" = CASE 
+                WHEN "device" IS NULL OR "device" = 'other' THEN ${device}
+                ELSE "device"
+              END
+          WHERE "id" = ${logId}::uuid
         `.catch(err => {
             console.error(`[Click Tracking] Database error for log ${logId}:`, err);
         });
 
-        // Record open as well if it hasn't been recorded (clicking imply opening)
+        // Record open as well. Update device if it's currently NULL or 'other'
         await prisma.$executeRaw`
           UPDATE "email_logs" 
           SET "opened_at" = COALESCE("opened_at", ${new Date()}),
-              "device" = COALESCE("device", ${device})
+              "device" = CASE 
+                WHEN "device" IS NULL OR "device" = 'other' THEN ${device}
+                ELSE "device"
+              END
           WHERE "id" = ${logId}::uuid
         `.catch(err => {
             console.error(`[Click Tracking] Database error (open sync) for log ${logId}:`, err);

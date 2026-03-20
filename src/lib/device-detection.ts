@@ -6,26 +6,24 @@ export function getDeviceType(userAgent: string | null): string {
     
     const ua = userAgent.toLowerCase();
     
-    // 1. Mobile & Tablet detection (more comprehensive)
+    // Yahoo specific detection (can be proxy or client)
+    if (ua.includes("yahoo") || ua.includes("ymail") || ua.includes("yahoomail")) {
+        // If it's a proxy, we still want to try to find mobile/desktop keywords
+        // Yahoo proxies often have "YahooMailProxy"
+    }
+
+    // 1. Mobile & Tablet detection
     const mobileKeywords = [
         "mobile", "android", "iphone", "ipod", "windows phone", 
         "opera mini", "mobi", "blackberry", "iemobile", "fennec",
-        "kindle", "silk", "playbook", "bb10"
+        "kindle", "silk", "playbook", "bb10", "yphone"
     ];
     
     const tabletKeywords = [
         "ipad", "tablet", "tab", "playbook"
     ];
 
-    // Special case for certain mail clients/proxies that don't have typical mobile UA but are mobile
-    if (ua.includes("gmailimageproxy") || ua.includes("office365-imageproxy")) {
-        // We can't know for sure, so we stay in "other" or "proxy" but we'll try to guess
-        // but for now let's keep it as "desktop" or "other" if unknown.
-        // Actually, if it's proxied, we might want to label it as "Proxy/Cloud".
-    }
-
     if (mobileKeywords.some(kw => ua.includes(kw))) {
-        // Special case for Android tablets
         if (ua.includes("android") && !ua.includes("mobile")) {
             return "tablet";
         }

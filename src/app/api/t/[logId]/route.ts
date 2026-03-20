@@ -22,12 +22,15 @@ export async function GET(
         
         console.log(`[Tracking] Device detected: ${device} | UA: ${userAgent}`);
 
-        // Record the open if it's the first time using raw query to bypass client validation issues
+        // Record the open. Update device if it's currently NULL or 'other' (to allow override from proxy)
         const result = await prisma.$executeRaw`
           UPDATE "email_logs" 
-          SET "opened_at" = ${new Date()},
-              "device" = ${device}
-          WHERE "id" = ${logId}::uuid AND "opened_at" IS NULL
+          SET "opened_at" = COALESCE("opened_at", ${new Date()}),
+              "device" = CASE 
+                WHEN "device" IS NULL OR "device" = 'other' THEN ${device}
+                ELSE "device"
+              END
+          WHERE "id" = ${logId}::uuid
         `.catch(err => {
             console.error(`[Tracking] Database error for log ${logId}:`, err);
             return 0;
