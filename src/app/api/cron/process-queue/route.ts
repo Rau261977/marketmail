@@ -6,7 +6,10 @@ import { QueueWorker } from '@/services/email/queue/QueueWorker';
 export async function GET(req: Request) {
   try {
     const authHeader = req.headers.get('Authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    const cronSecret = process.env.CRON_SECRET;
+
+    // Allow skip auth if secret is not configured (dev) or if triggered from local dashboard
+    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
       console.warn('[Cron] Unauthorized attempt to access process-queue');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

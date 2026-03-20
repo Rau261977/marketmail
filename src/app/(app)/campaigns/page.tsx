@@ -12,6 +12,7 @@ import {
 import { prisma } from "@/lib/db";
 import { ProcessQueueButton } from "@/components/ProcessQueueButton";
 import FormattedDate from "@/components/ui/FormattedDate";
+import { CreateCampaignModal } from "@/components/CreateCampaignModal";
 
 async function getCampaigns() {
   return await prisma.emailCampaign.findMany({
@@ -53,15 +54,12 @@ export default async function CampaignsPage() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex justify-between items-end">
         <div>
-          <h2 className="text-3xl font-bold">Campaigns</h2>
-          <p className="text-slate-400 mt-1">Configure mass mailings and monitor delivery status.</p>
+          <h2 className="text-3xl font-bold">Campañas</h2>
+          <p className="text-slate-400 mt-1">Configura envíos masivos y monitorea el estado de entrega.</p>
         </div>
         <div className="flex items-center gap-3">
           <ProcessQueueButton />
-          <button className="flex items-center gap-2 bg-violet-600/10 hover:bg-violet-600/20 text-violet-400 px-4 py-2 rounded-xl text-sm font-semibold transition-all active:scale-95 border border-violet-500/20">
-            <Plus size={18} />
-            Create Campaign
-          </button>
+          <CreateCampaignModal />
         </div>
       </div>
 

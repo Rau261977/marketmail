@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/db";
 import Link from "next/link";
+import { CreateTemplateModal } from "@/components/CreateTemplateModal";
 
 async function getTemplates() {
   return await prisma.emailTemplate.findMany({
@@ -26,10 +27,7 @@ export default async function TemplatesPage() {
           <h2 className="text-3xl font-bold font-heading">Plantillas</h2>
           <p className="text-slate-400 mt-1">Diseña y gestiona tus diseños de correo reutilizables.</p>
         </div>
-        <button className="flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-violet-600/20 active:scale-95">
-          <Plus size={18} />
-          Crear Plantilla
-        </button>
+        <CreateTemplateModal />
       </div>
 
       {/* Grid of Templates */}
@@ -76,13 +74,10 @@ export default async function TemplatesPage() {
           </div>
         ))}
 
-        {/* Empty State / Create New Card */}
-        <button className="border-2 border-dashed border-white/5 rounded-2xl p-8 flex flex-col items-center justify-center gap-4 hover:border-violet-500/20 hover:bg-violet-500/[0.02] transition-all group min-h-[300px]">
-          <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-violet-500/20 transition-colors">
-            <Plus className="text-slate-400 group-hover:text-violet-400" />
-          </div>
-          <p className="text-sm font-medium text-slate-400 group-hover:text-slate-200">Nueva plantilla</p>
-        </button>
+        {/* Empty State / Create New Card handled by the same modal button if needed, but for now we keep the simple button above */}
+        <div className="border-2 border-dashed border-white/5 rounded-2xl p-8 flex flex-col items-center justify-center gap-4 hover:border-violet-500/20 hover:bg-violet-500/[0.02] transition-all group min-h-[300px] opacity-20">
+          <p className="text-xs text-slate-500 uppercase font-bold tracking-[0.2em]">Diseño Premium</p>
+        </div>
       </div>
     </div>
   );

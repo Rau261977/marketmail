@@ -15,6 +15,7 @@ import {
 import { useRouter } from "next/navigation";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { CreateCampaignModal } from "./CreateCampaignModal";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -66,10 +67,7 @@ export function Sidebar() {
       </nav>
 
       <div className="p-4 mt-auto space-y-2">
-        <button className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl py-3 px-4 font-semibold shadow-lg shadow-violet-600/20 hover:shadow-violet-600/30 transition-all hover:-translate-y-0.5 active:translate-y-0">
-          <Plus size={20} />
-          Nueva Campaña
-        </button>
+        <CreateCampaignModal variant="sidebar" />
         
         <button 
           onClick={handleLogout}
