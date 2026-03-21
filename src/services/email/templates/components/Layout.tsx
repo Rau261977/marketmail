@@ -152,8 +152,8 @@ const footer = {
 
 const footerText = {
   color: "#8898aa",
-  fontSize: "16px",
-  lineHeight: "16px",
+  fontSize: "18px",
+  lineHeight: "18px",
   textAlign: "center" as const,
   margin: "4px 0",
 };
