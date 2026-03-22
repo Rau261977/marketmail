@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { CreateCampaignModal } from "./CreateCampaignModal";
+import { logoutAction } from "@/lib/auth-actions";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -34,9 +35,8 @@ export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleLogout = () => {
-    // In a real app, clear auth tokens here
-    router.push("/");
+  const handleLogout = async () => {
+    await logoutAction();
   };
 
   return (
