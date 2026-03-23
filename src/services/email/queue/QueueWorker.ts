@@ -118,6 +118,7 @@ export class QueueWorker {
         from: settings ? `"${settings.fromName}" <${settings.fromEmail}>` : undefined,
         replyTo: settings?.replyTo || undefined,
         tenantId: item.tenantId,
+        unsubscribeUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/u/${trackingId}`
       };
 
       const result = await this.emailService.safeSend(payload);

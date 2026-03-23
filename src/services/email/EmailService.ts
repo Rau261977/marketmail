@@ -10,6 +10,7 @@ export interface EmailPayload {
   from?: string;
   replyTo?: string;
   tenantId: string;
+  unsubscribeUrl?: string;
 }
 
 export interface SendResult {
@@ -38,13 +39,21 @@ export class EmailService {
       // 2. Determine "From" address (prioritize payload, then default)
       const from = payload.from || this.defaultFrom;
 
-      // 3. Send via Resend
+      // 3. Prepare headers for One-Click Unsubscribe (RFC 8058)
+      const headers: Record<string, string> = {};
+      if (payload.unsubscribeUrl) {
+        headers['List-Unsubscribe'] = `<${payload.unsubscribeUrl}>`;
+        headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
+      }
+
+      // 4. Send via Resend
       const { data, error } = await this.resend.emails.send({
         from,
         to: payload.to,
         subject: payload.subject,
         html,
         replyTo: payload.replyTo ?? undefined,
+        headers,
         tags: [
           { name: 'tenant_id', value: payload.tenantId },
         ],

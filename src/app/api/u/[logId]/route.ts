@@ -62,3 +62,37 @@ export async function GET(
     return new NextResponse("Error al procesar la baja. Por favor, inténtalo de nuevo más tarde.", { status: 500 });
   }
 }
+/**
+ * POST handler for One-Click Unsubscribe (RFC 8058)
+ * This is triggered by email clients (Gmail, Outlook) when the user clicks 'Unsubscribe' in the UI.
+ */
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ logId: string }> }
+) {
+  try {
+    const { logId } = await params;
+
+    const emailLog = await prisma.emailLog.findUnique({
+      where: { id: logId },
+      include: { lead: true }
+    });
+
+    if (!emailLog || !emailLog.lead) {
+      return NextResponse.json({ error: "Invalid link" }, { status: 404 });
+    }
+
+    // Mark as unsubscribed
+    await prisma.lead.update({
+      where: { id: emailLog.leadId },
+      data: { unsubscribedAt: new Date() }
+    });
+
+    console.log(`[Unsubscribe-POST] Lead ${emailLog.leadId} unsubscribed via log ${logId}`);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Unsubscribe POST error:", error);
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+  }
+}

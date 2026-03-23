@@ -58,7 +58,8 @@ export async function POST(request: Request) {
         subject: template.subject,
         template: React.createElement(WelcomeEmail, emailProps),
         from: `${fromName} <${fromEmail}>`,
-        tenantId: lead.tenantId
+        tenantId: lead.tenantId,
+        unsubscribeUrl: emailProps.unsubscribeUrl
     });
 
     if (!result.success) {
