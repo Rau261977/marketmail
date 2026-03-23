@@ -29,8 +29,10 @@ export function EmailLogsDashboard({ initialLogs }: Props) {
   const [logs, setLogs] = useState<EmailLog[]>(initialLogs);
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [searchTerm, setSearchTerm] = useState("");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const poll = async () => {
       // Avoid polling if the tab is not visible to save resources
       if (document.visibilityState !== 'visible') return;
@@ -120,7 +122,9 @@ export function EmailLogsDashboard({ initialLogs }: Props) {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-xs text-slate-500">Última sync: {lastUpdate.toLocaleTimeString()}</span>
+            <span className="text-xs text-slate-500">
+              Última sync: {mounted ? lastUpdate.toLocaleTimeString() : '--:--:--'}
+            </span>
             <button className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-sm font-medium transition-colors border border-white/10">
                 <Filter size={18} />
                 Filtros
