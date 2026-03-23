@@ -227,7 +227,7 @@ export function EmailLogsDashboard({ initialLogs }: Props) {
                         </div>
                       ) : (
                         <div className="flex items-center gap-2 text-blue-400 text-xs font-medium bg-blue-500/10 w-fit px-2 py-1 rounded-full border border-blue-500/20">
-                          {new Date().getTime() - new Date(log.createdAt).getTime() < 120000 ? (
+                          {new Date().getTime() - new Date(log.createdAt).getTime() < 30000 ? (
                             <>
                               <Clock size={14} className="animate-pulse" />
                               Enviando...
@@ -239,6 +239,7 @@ export function EmailLogsDashboard({ initialLogs }: Props) {
                             </>
                           )}
                         </div>
+
                       )}
                     </td>
 
