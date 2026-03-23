@@ -11,15 +11,19 @@ import { prisma } from '@/lib/db';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log('[Resend Webhook] Received event:', body.type);
-
     const { type, data } = body;
     const resendId = data.email_id;
+    
+    // Extract log_id from tags if available (our reliable internal ID)
+    const logId = data.tags?.log_id;
 
-    if (!resendId) {
-      console.warn('[Resend Webhook] Missing email_id in payload');
-      return NextResponse.json({ error: 'Missing email_id' }, { status: 400 });
+    console.log(`[Resend Webhook] Event: ${type} | ResendID: ${resendId} | LogID: ${logId}`);
+
+    if (!resendId && !logId) {
+      console.warn('[Resend Webhook] Missing both email_id and log_id in payload');
+      return NextResponse.json({ error: 'Missing identification' }, { status: 400 });
     }
+
 
     const updateData: any = {};
     const now = new Date();
@@ -43,13 +47,14 @@ export async function POST(request: Request) {
         return NextResponse.json({ message: 'Event type not tracked via webhook' });
     }
 
-    // Update all logs with this resendId (usually one, but safety first)
+    // Update using our internal logId (UUID) if available, otherwise fallback to resendId
     const result = await prisma.emailLog.updateMany({
-      where: { resendId },
+      where: logId ? { id: logId } : { resendId },
       data: updateData,
     });
 
-    console.log(`[Resend Webhook] Updated ${result.count} logs for ID ${resendId} to status ${updateData.status}`);
+    console.log(`[Resend Webhook] Updated ${result.count} logs. Targeted ID: ${logId || resendId} | New Status: ${updateData.status}`);
+
 
     return NextResponse.json({ success: true, updated: result.count });
   } catch (error) {

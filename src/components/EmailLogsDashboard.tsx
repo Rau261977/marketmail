@@ -220,18 +220,28 @@ export function EmailLogsDashboard({ initialLogs }: Props) {
                           <XCircle size={14} />
                           Spam
                         </div>
-                      ) : log.deliveredAt || log.status === 'delivered' ? (
+                      ) : log.deliveredAt || log.status === 'delivered' || log.openedAt || log.clickedAt ? (
                         <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium bg-emerald-500/10 w-fit px-2 py-1 rounded-full border border-emerald-500/20">
                           <CheckCircle2 size={14} />
                           Entregado
                         </div>
                       ) : (
                         <div className="flex items-center gap-2 text-blue-400 text-xs font-medium bg-blue-500/10 w-fit px-2 py-1 rounded-full border border-blue-500/20">
-                          <Clock size={14} className="animate-pulse" />
-                          Enviado
+                          {new Date().getTime() - new Date(log.createdAt).getTime() < 120000 ? (
+                            <>
+                              <Clock size={14} className="animate-pulse" />
+                              Enviando...
+                            </>
+                          ) : (
+                            <>
+                              <CheckCircle2 size={14} className="text-blue-400/70" />
+                              Enviado
+                            </>
+                          )}
                         </div>
                       )}
                     </td>
+
                     <td className="px-6 py-4 text-sm text-slate-400 tabular-nums">
                       <FormattedDate date={log.createdAt} />
                     </td>

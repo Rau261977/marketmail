@@ -59,8 +59,10 @@ export async function POST(request: Request) {
         template: React.createElement(WelcomeEmail, emailProps),
         from: `${fromName} <${fromEmail}>`,
         tenantId: lead.tenantId,
-        unsubscribeUrl: emailProps.unsubscribeUrl
+        unsubscribeUrl: emailProps.unsubscribeUrl,
+        logId: trackingId
     });
+
 
     if (!result.success) {
       return NextResponse.json({ error: result.error }, { status: 500 });

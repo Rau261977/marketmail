@@ -118,8 +118,10 @@ export class QueueWorker {
         from: settings ? `"${settings.fromName}" <${settings.fromEmail}>` : undefined,
         replyTo: settings?.replyTo || undefined,
         tenantId: item.tenantId,
-        unsubscribeUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/u/${trackingId}`
+        unsubscribeUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/u/${trackingId}`,
+        logId: trackingId
       };
+
 
       const result = await this.emailService.safeSend(payload);
 
@@ -144,7 +146,26 @@ export class QueueWorker {
             status: 'sent'
           }
         });
+
+        // DEVELOPMENT ONLY: Simulate a delivery webhook after 5 seconds
+        if (process.env.NODE_ENV === 'development') {
+            setTimeout(async () => {
+                try {
+                    await (prisma.emailLog as any).update({
+                        where: { id: trackingId },
+                        data: {
+                            status: 'delivered',
+                            deliveredAt: new Date()
+                        }
+                    });
+                    console.log(`[DEV MOCK] Simulated delivery for queue log ${trackingId}`);
+                } catch (err) {
+                    console.error('[DEV MOCK] Error simulating delivery:', err);
+                }
+            }, 5000);
+        }
       } else {
+
         await prisma.emailQueue.update({
           where: { id: item.id },
           data: {

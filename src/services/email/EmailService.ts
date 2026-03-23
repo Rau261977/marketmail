@@ -11,7 +11,9 @@ export interface EmailPayload {
   replyTo?: string;
   tenantId: string;
   unsubscribeUrl?: string;
+  logId?: string;
 }
+
 
 export interface SendResult {
   success: boolean;
@@ -56,8 +58,11 @@ export class EmailService {
         headers,
         tags: [
           { name: 'tenant_id', value: payload.tenantId },
+          // log_id is the internal UUID for this email send, used for reliable webhook mapping
+          { name: 'log_id', value: (payload as any).logId || 'unknown' },
         ],
       });
+
 
       if (error) {
         console.error(`[EmailService] Resend error:`, error);

@@ -68,8 +68,9 @@ async function getStats() {
 
     const sent = dayLogs.length;
     const opened = dayLogs.filter(l => l.openedAt !== null).length;
-    const delivered = dayLogs.filter(l => l.deliveredAt !== null).length;
+    const delivered = dayLogs.filter(l => l.deliveredAt !== null || l.openedAt !== null || l.clickedAt !== null).length;
     const bounced = dayLogs.filter(l => l.bouncedAt !== null).length;
+
 
     return {
       date: date.toLocaleDateString('es-ES', { weekday: 'short' }),
