@@ -14,20 +14,25 @@ export async function POST(request: Request) {
     console.log('[Resend Webhook] Full Payload:', JSON.stringify(body, null, 2));
 
     const { type, event, data } = body;
-    const finalType = type || event; // Some versions use event
-    const resendId = data?.email_id || data?.id || body.id;
+    const finalType = type || event;
+
+    const rawResendId = data?.email_id || data?.id || body.id;
     
-    // Extract log_id from various possible locations in the payload
+    // Normalize IDs by removing "re_" prefix if present
+    const normalize = (id?: any) => (typeof id === 'string' ? id.replace(/^re_/, '') : id);
+    const resendId = normalize(rawResendId);
+
+    // Extract log_id from various possible locations and normalize
     let logId = null;
     if (data?.tags) {
-      if (Array.isArray(data.tags)) {
-        logId = data.tags.find((t: any) => t.name === 'log_id' || t.key === 'log_id' || t.name === 'logId')?.value;
-      } else if (typeof data.tags === 'object') {
-        logId = data.tags.log_id || data.tags.logId;
-      }
+      const tagVal = Array.isArray(data.tags) 
+        ? data.tags.find((t: any) => t.name === 'log_id' || t.key === 'log_id' || t.name === 'logId')?.value
+        : (data.tags.log_id || data.tags.logId);
+      logId = normalize(tagVal);
     }
 
-    console.log(`[Resend Webhook] Processed -> Event: ${finalType} | ResendID: ${resendId} | LogID: ${logId}`);
+    console.log(`[Resend Webhook] Processed -> Event: ${finalType} | ResendID(norm): ${resendId} | LogID(norm): ${logId}`);
+
 
     if (!resendId && !logId) {
       console.warn('[Resend Webhook] Could not find any identification (id or log_id)');
@@ -58,19 +63,26 @@ export async function POST(request: Request) {
         return NextResponse.json({ message: 'Event not tracked' });
     }
 
-    // 1. Try to find the log ID by ResendID or our LogID Tag
+    // 1. Try to find the log ID by ResendID or our LogID Tag (Both normalized)
     let targetedLogId = logId;
     
     if (!targetedLogId && resendId) {
-      const log = await prisma.emailLog.findFirst({
-        where: { resendId: resendId },
-        select: { id: true }
+      // Search for matches with OR WITHOUT prefix in the database
+      const logs = await prisma.emailLog.findMany({
+        where: {
+          OR: [
+            { resendId: resendId },
+            { resendId: `re_${resendId}` },
+            { id: resendId as any } // Fallback if the ID was somehow stored in the main ID column
+          ]
+        },
+        select: { id: true },
+        take: 1
       });
-      if (log) targetedLogId = log.id;
+      if (logs.length > 0) targetedLogId = logs[0].id;
     }
 
-    // 2. ULTIMATE FALLBACK: Match by recipient email if ID-based matching failed
-    // This handles cases where IDs might not match due to environment differences.
+    // 2. ULTIMATE FALLBACK: Match by recipient email
     if (!targetedLogId && data?.to) {
       const recipient = Array.isArray(data.to) ? data.to[0] : data.to;
       const recentLog = await prisma.emailLog.findFirst({
@@ -86,6 +98,7 @@ export async function POST(request: Request) {
         console.log(`[Resend Webhook] Matched by recipient fallback: ${recipient} -> ${targetedLogId}`);
       }
     }
+
 
     if (!targetedLogId) {
       console.warn(`[Resend Webhook] Still could not find log for event ${finalType} (ResendID: ${resendId}, LogID: ${logId})`);

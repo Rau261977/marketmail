@@ -15,6 +15,7 @@ async function getEmailLogs() {
         l.delivered_at as "deliveredAt",
         l.bounced_at as "bouncedAt",
         l.complained_at as "complainedAt",
+        l.resend_id as "resendId",
         l.created_at as "createdAt",
         json_build_object('name', ld.name, 'email', ld.email) as lead
       FROM email_logs l
@@ -23,6 +24,7 @@ async function getEmailLogs() {
       LIMIT 100
     `;
     return logs as any[];
+
   } catch (error) {
     console.error("Error fetching email logs:", error);
     return [];
@@ -41,7 +43,11 @@ export default async function EmailsPage() {
         </div>
       </div>
 
-      <EmailLogsDashboard initialLogs={logs} />
+      <EmailLogsDashboard 
+        initialLogs={logs} 
+        serverTime={new Date().toISOString()} 
+      />
+
     </div>
   );
 }

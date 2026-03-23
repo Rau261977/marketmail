@@ -24,7 +24,11 @@ export async function GET() {
       ORDER BY l.created_at DESC
       LIMIT 100
     `;
-    return NextResponse.json(logs);
+    return NextResponse.json({
+      logs,
+      serverTime: new Date().toISOString()
+    });
+
   } catch (error: any) {
     console.error("Error fetching logs API:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

@@ -26,31 +26,39 @@ interface EmailLog {
 
 interface Props {
   initialLogs: EmailLog[];
+  serverTime: string;
 }
 
-export function EmailLogsDashboard({ initialLogs }: Props) {
+export function EmailLogsDashboard({ initialLogs, serverTime: initialServerTime }: Props) {
   const [logs, setLogs] = useState<EmailLog[]>(initialLogs);
-  const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [serverTime, setServerTime] = useState(new Date(initialServerTime));
   const [searchTerm, setSearchTerm] = useState("");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    
+    // Update local serverTime every second to keep sync without polling too much
+    const timeInterval = setInterval(() => {
+      setServerTime(prev => new Date(prev.getTime() + 1000));
+    }, 1000);
+
     const poll = async () => {
-      // Avoid polling if the tab is not visible to save resources
       if (document.visibilityState !== 'visible') return;
 
       try {
         const res = await fetch("/api/logs");
         if (res.ok) {
           const data = await res.json();
-          setLogs(data);
-          setLastUpdate(new Date());
+          // The API now returns { logs, serverTime }
+          if (data.logs) setLogs(data.logs);
+          if (data.serverTime) setServerTime(new Date(data.serverTime));
         }
       } catch (err) {
         console.error("Polling error:", err);
       }
     };
+
 
     const interval = setInterval(poll, 10000); // 10 seconds is a good balance
     
@@ -126,8 +134,9 @@ export function EmailLogsDashboard({ initialLogs }: Props) {
           </div>
           <div className="flex items-center gap-4">
             <span className="text-xs text-slate-500">
-              Última sync: {mounted ? lastUpdate.toLocaleTimeString() : '--:--:--'}
+              Última sync: {mounted ? serverTime.toLocaleTimeString() : '--:--:--'}
             </span>
+
             <button className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-sm font-medium transition-colors border border-white/10">
                 <Filter size={18} />
                 Filtros
@@ -155,10 +164,9 @@ export function EmailLogsDashboard({ initialLogs }: Props) {
                       <div className="flex flex-col">
                         <span className="text-sm font-medium text-slate-200">{log.lead.name || 'Sin nombre'}</span>
                         <span className="text-xs text-slate-400">{log.lead.email}</span>
-                        {/* DEBUG: Show the ID to verify it exists and matches */}
-                        <span className="text-[9px] text-slate-600 mt-1 uppercase font-mono">{log.id.slice(0,8)} | { (log as any).resendId || 'NO ID' }</span>
                       </div>
                     </td>
+
 
                     <td className="px-6 py-4">
                       {log.openedAt ? (
