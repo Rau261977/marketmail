@@ -12,6 +12,9 @@ export async function GET() {
         l.device, 
         l.opened_at as "openedAt", 
         l.clicked_at as "clickedAt", 
+        l.delivered_at as "deliveredAt",
+        l.bounced_at as "bouncedAt",
+        l.complained_at as "complainedAt",
         l.created_at as "createdAt",
         json_build_object('name', ld.name, 'email', ld.email) as lead
       FROM email_logs l

@@ -11,6 +11,9 @@ interface EmailLog {
   device: string | null;
   openedAt: string | null;
   clickedAt: string | null;
+  deliveredAt: string | null;
+  bouncedAt: string | null;
+  complainedAt: string | null;
   createdAt: string;
   lead: {
     name: string;
@@ -61,13 +64,15 @@ export function EmailLogsDashboard({ initialLogs }: Props) {
   );
 
   const stats = {
-    sent: logs.filter(l => l.status === 'sent').length,
+    sent: logs.length,
+    delivered: logs.filter(l => l.deliveredAt !== null || (l.status === 'sent' && !l.bouncedAt)).length,
     opened: logs.filter(l => l.openedAt !== null).length,
     clicked: logs.filter(l => l.clickedAt !== null).length,
+    bounced: logs.filter(l => l.bouncedAt !== null || l.status === 'bounced').length,
   };
 
-  const openRate = stats.sent > 0 ? ((stats.opened / stats.sent) * 100).toFixed(1) : "0";
-  const ctr = stats.sent > 0 ? ((stats.clicked / stats.sent) * 100).toFixed(1) : "0";
+  const openRate = stats.delivered > 0 ? ((stats.opened / stats.delivered) * 100).toFixed(1) : "0";
+  const ctr = stats.delivered > 0 ? ((stats.clicked / stats.delivered) * 100).toFixed(1) : "0";
 
   return (
     <div className="space-y-8">
@@ -75,11 +80,11 @@ export function EmailLogsDashboard({ initialLogs }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
         <div className="glass-card border-emerald-500/20">
           <p className="text-slate-400 text-sm">Entregados</p>
-          <h3 className="text-2xl font-bold text-emerald-400">{stats.sent}</h3>
+          <h3 className="text-2xl font-bold text-emerald-400">{stats.delivered}</h3>
         </div>
-        <div className="glass-card border-violet-500/20">
-          <p className="text-slate-400 text-sm">Aperturas</p>
-          <h3 className="text-2xl font-bold text-violet-400">{stats.opened}</h3>
+        <div className="glass-card border-rose-500/20">
+          <p className="text-slate-400 text-sm">Rebotes</p>
+          <h3 className="text-2xl font-bold text-rose-400">{stats.bounced}</h3>
         </div>
         <div className="glass-card border-blue-500/20">
           <p className="text-slate-400 text-sm">Tasa de Apertura</p>
@@ -201,15 +206,25 @@ export function EmailLogsDashboard({ initialLogs }: Props) {
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      {log.status === 'sent' ? (
-                        <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium bg-emerald-500/10 w-fit px-2 py-1 rounded-full border border-emerald-500/20">
-                          <CheckCircle2 size={14} />
-                          Enviado
-                        </div>
-                      ) : (
+                      {log.bouncedAt || log.status === 'bounced' ? (
                         <div className="flex items-center gap-2 text-rose-400 text-xs font-medium bg-rose-500/10 w-fit px-2 py-1 rounded-full border border-rose-500/20">
                           <XCircle size={14} />
-                          Error
+                          Rebotado
+                        </div>
+                      ) : log.complainedAt || log.status === 'complained' ? (
+                        <div className="flex items-center gap-2 text-pink-400 text-xs font-medium bg-pink-500/10 w-fit px-2 py-1 rounded-full border border-pink-500/20">
+                          <XCircle size={14} />
+                          Spam
+                        </div>
+                      ) : log.deliveredAt || log.status === 'delivered' ? (
+                        <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium bg-emerald-500/10 w-fit px-2 py-1 rounded-full border border-emerald-500/20">
+                          <CheckCircle2 size={14} />
+                          Entregado
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-blue-400 text-xs font-medium bg-blue-500/10 w-fit px-2 py-1 rounded-full border border-blue-500/20">
+                          <Clock size={14} className="animate-pulse" />
+                          Enviado
                         </div>
                       )}
                     </td>
