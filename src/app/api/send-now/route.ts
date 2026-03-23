@@ -78,6 +78,25 @@ export async function POST(request: Request) {
         }
     });
 
+    // DEVELOPMENT ONLY: Simulate a delivery webhook after 5 seconds
+    if (process.env.NODE_ENV === 'development') {
+        // We don't await this so the response can be sent immediately
+        setTimeout(async () => {
+            try {
+                await (prisma.emailLog as any).update({
+                    where: { id: trackingId },
+                    data: {
+                        status: 'delivered',
+                        deliveredAt: new Date()
+                    }
+                });
+                console.log(`[DEV MOCK] Simulated delivery for log ${trackingId}`);
+            } catch (err) {
+                console.error('[DEV MOCK] Error simulating delivery:', err);
+            }
+        }, 5000);
+    }
+
     return NextResponse.json({ success: true, resendId: result.id });
   } catch (error: any) {
     console.error("Send error:", error);
