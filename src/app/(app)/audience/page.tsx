@@ -59,61 +59,61 @@ export default async function AudiencePage() {
       <div className="glass-card !p-0">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b border-white/5 bg-white/[0.02]">
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Nombre</th>
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Email</th>
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Estado</th>
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Registrado</th>
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/5">
-            {leads.map((lead: any) => (
-              <tr key={lead.id} className="hover:bg-white/[0.02] transition-colors group">
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-violet-500/20 to-indigo-500/20 border border-violet-500/20 flex items-center justify-center text-violet-400 text-xs font-bold uppercase">
-                      {lead.name?.charAt(0) || lead.email.charAt(0)}
+            <thead>
+              <tr className="border-b border-white/5 bg-white/[0.02]">
+                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Nombre</th>
+                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Email</th>
+                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Estado</th>
+                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Registrado</th>
+                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {leads.map((lead: any) => (
+                <tr key={lead.id} className="hover:bg-white/[0.02] transition-colors group">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-violet-500/20 to-indigo-500/20 border border-violet-500/20 flex items-center justify-center text-violet-400 text-xs font-bold uppercase">
+                        {lead.name?.charAt(0) || lead.email.charAt(0)}
+                      </div>
+                      <span className="text-sm font-medium text-slate-200">{lead.name || 'Anónimo'}</span>
                     </div>
-                    <span className="text-sm font-medium text-slate-200">{lead.name || 'Anónimo'}</span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-sm text-slate-400">{lead.email}</td>
-                <td className="px-6 py-4">
-                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    lead.unsubscribedAt 
-                      ? "bg-rose-500/10 text-rose-400 border border-rose-500/20" 
-                      : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                  }`}>
-                    {lead.unsubscribedAt ? 'Baja' : 'Activo'}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-sm text-slate-400">
-                  {new Date(lead.createdAt).toLocaleDateString()}
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    {templateId && <SendNowButton leadId={lead.id} templateId={templateId} />}
-                    <ContactActions lead={lead} />
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {leads.length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-6 py-12 text-center">
-                  <div className="flex flex-col items-center gap-3 opacity-40">
-                    <Users size={48} />
-                    <p className="text-sm">No se encontraron contactos en tu audiencia.</p>
-                  </div>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-slate-400">{lead.email}</td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      lead.unsubscribedAt 
+                        ? "bg-rose-500/10 text-rose-400 border border-rose-500/20" 
+                        : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                    }`}>
+                      {lead.unsubscribedAt ? 'Baja' : 'Activo'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-slate-400">
+                    {new Date(lead.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      {templateId && <SendNowButton leadId={lead.id} templateId={templateId} />}
+                      <ContactActions lead={lead} />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {leads.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center">
+                    <div className="flex flex-col items-center gap-3 opacity-40">
+                      <Users size={48} />
+                      <p className="text-sm">No se encontraron contactos en tu audiencia.</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-     </div>
     </div>
   );
 }
