@@ -14,6 +14,7 @@ import Link from "next/link";
 import { MetricCard } from "@/components/MetricCard";
 import { prisma } from "@/lib/db";
 import TimeAgo from "@/components/ui/TimeAgo";
+import { DeliveryChart } from "@/components/DeliveryChart";
 
 async function getStats() {
   const [totalLeads, totalSent, totalTemplates, totalOpened, recentLogs, userResult] = await Promise.all([
@@ -32,6 +33,70 @@ async function getStats() {
   const user = userResult || { name: 'Arquitecto' };
   const openRate = totalSent > 0 ? (totalOpened / totalSent) * 100 : 0;
 
+  // Fetch last 7 days of stats
+  const last7Days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }).reverse();
+
+  const sevenDaysAgo = last7Days[0];
+
+  const logs = await prisma.emailLog.findMany({
+    where: {
+      OR: [
+        { createdAt: { gte: sevenDaysAgo } },
+        { openedAt: { gte: sevenDaysAgo } },
+        { deliveredAt: { gte: sevenDaysAgo } },
+        { bouncedAt: { gte: sevenDaysAgo } }
+      ]
+    },
+    select: {
+      createdAt: true,
+      openedAt: true,
+      deliveredAt: true,
+      bouncedAt: true,
+      status: true
+    }
+  });
+
+  const dailyStats = last7Days.map(date => {
+    const nextDate = new Date(date);
+    nextDate.setDate(nextDate.getDate() + 1);
+    
+    const sent = logs.filter(l => 
+      l.status === 'sent' && 
+      l.createdAt >= date && 
+      l.createdAt < nextDate
+    ).length;
+
+    const opened = logs.filter(l => 
+      l.openedAt && 
+      l.openedAt >= date && 
+      l.openedAt < nextDate
+    ).length;
+
+    const delivered = logs.filter(l => 
+      l.deliveredAt && 
+      l.deliveredAt >= date && 
+      l.deliveredAt < nextDate
+    ).length;
+
+    const bounced = logs.filter(l => 
+      l.bouncedAt && 
+      l.bouncedAt >= date && 
+      l.bouncedAt < nextDate
+    ).length;
+
+    return {
+      date: date.toLocaleDateString('es-ES', { weekday: 'short' }),
+      sent,
+      opened,
+      delivered,
+      bounced
+    };
+  });
 
   return {
     totalLeads: totalLeads.toLocaleString(),
@@ -44,7 +109,8 @@ async function getStats() {
       text: `Correo enviado a ${log.lead.name || log.lead.email}`,
       createdAt: log.createdAt
     })),
-    userName: user.name || 'Arquitecto'
+    userName: user.name || 'Arquitecto',
+    dailyStats
   };
 }
 
@@ -97,15 +163,15 @@ export default async function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <div className="glass-card h-[400px] flex flex-col">
+          <div className="glass-card min-h-[400px] flex flex-col">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold flex items-center gap-2">
                 <BarChart3 size={20} className="text-violet-400" />
                 Rendimiento de Entrega
               </h3>
             </div>
-            <div className="flex-1 flex items-center justify-center border-t border-white/5 border-dashed">
-              <p className="text-slate-400 text-sm">Visualización de analíticas en desarrollo.</p>
+            <div className="flex-1 border-t border-white/5 border-dashed pt-4">
+              <DeliveryChart data={stats.dailyStats} />
             </div>
           </div>
         </div>

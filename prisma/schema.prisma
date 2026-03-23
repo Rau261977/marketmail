@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Tenant {
@@ -163,6 +164,9 @@ model EmailLog {
   device     String?
   openedAt   DateTime? @map("opened_at")
   clickedAt  DateTime? @map("clicked_at")
+  deliveredAt DateTime? @map("delivered_at")
+  bouncedAt   DateTime? @map("bounced_at")
+  complainedAt DateTime? @map("complained_at")
   createdAt  DateTime @default(now()) @map("created_at")
 
   tenant   Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
