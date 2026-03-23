@@ -58,18 +58,69 @@ export async function POST(request: Request) {
         return NextResponse.json({ message: 'Event not tracked' });
     }
 
-    // Update using internal logId if found, otherwise resendId
-    const result = await prisma.emailLog.updateMany({
-      where: logId ? { id: logId } : { resendId: resendId },
-      data: updateData,
-    });
+    // 1. Try to find the log ID by ResendID or our LogID Tag
+    let targetedLogId = logId;
+    
+    if (!targetedLogId && resendId) {
+      const log = await prisma.emailLog.findFirst({
+        where: { resendId: resendId },
+        select: { id: true }
+      });
+      if (log) targetedLogId = log.id;
+    }
 
-    console.log(`[Resend Webhook] Result: ${result.count} rows updated for ${logId || resendId}`);
+    // 2. ULTIMATE FALLBACK: Match by recipient email if ID-based matching failed
+    // This handles cases where IDs might not match due to environment differences.
+    if (!targetedLogId && data?.to) {
+      const recipient = Array.isArray(data.to) ? data.to[0] : data.to;
+      const recentLog = await prisma.emailLog.findFirst({
+        where: { 
+          lead: { email: recipient },
+          status: 'sent'
+        },
+        orderBy: { createdAt: 'desc' },
+        select: { id: true }
+      });
+      if (recentLog) {
+        targetedLogId = recentLog.id;
+        console.log(`[Resend Webhook] Matched by recipient fallback: ${recipient} -> ${targetedLogId}`);
+      }
+    }
 
-    return NextResponse.json({ success: true, updated: result.count });
+    if (!targetedLogId) {
+      console.warn(`[Resend Webhook] Still could not find log for event ${finalType} (ResendID: ${resendId}, LogID: ${logId})`);
+      return NextResponse.json({ message: 'Log not found' }, { status: 200 });
+    }
+
+    // 3. Use executeRaw to bypass any Prisma
+
+    // 3. Use executeRaw to bypass any Prisma UUID mapping issues in production
+    let result = 0;
+    if (statusType === 'delivered') {
+      result = await prisma.$executeRaw`
+        UPDATE "email_logs" 
+        SET "status" = 'delivered', "delivered_at" = COALESCE("delivered_at", ${now})
+        WHERE "id" = ${targetedLogId}::uuid
+      `;
+    } else if (statusType === 'bounced' || statusType === 'complained') {
+      const dbStatus = statusType === 'bounced' ? 'bounced' : 'complained';
+      const dbColumn = statusType === 'bounced' ? 'bounced_at' : 'complained_at';
+      
+      // We use a safe query approach here
+      if (statusType === 'bounced') {
+        result = await prisma.$executeRaw`UPDATE "email_logs" SET "status" = 'bounced', "bounced_at" = ${now} WHERE "id" = ${targetedLogId}::uuid`;
+      } else {
+        result = await prisma.$executeRaw`UPDATE "email_logs" SET "status" = 'complained', "complained_at" = ${now} WHERE "id" = ${targetedLogId}::uuid`;
+      }
+    }
+
+    console.log(`[Resend Webhook] Final Result: ${result} rows updated for ${targetedLogId}`);
+
+    return NextResponse.json({ success: true, updated: result });
   } catch (error) {
     console.error('[Resend Webhook Error]:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
 
