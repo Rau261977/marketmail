@@ -15,7 +15,10 @@ interface EmailLog {
   bouncedAt: string | null;
   complainedAt: string | null;
   createdAt: string;
+  resendId?: string | null;
   lead: {
+
+
     name: string;
     email: string;
   };
@@ -152,8 +155,11 @@ export function EmailLogsDashboard({ initialLogs }: Props) {
                       <div className="flex flex-col">
                         <span className="text-sm font-medium text-slate-200">{log.lead.name || 'Sin nombre'}</span>
                         <span className="text-xs text-slate-400">{log.lead.email}</span>
+                        {/* DEBUG: Show the ID to verify it exists and matches */}
+                        <span className="text-[9px] text-slate-600 mt-1 uppercase font-mono">{log.id.slice(0,8)} | { (log as any).resendId || 'NO ID' }</span>
                       </div>
                     </td>
+
                     <td className="px-6 py-4">
                       {log.openedAt ? (
                         <div className="flex flex-col">

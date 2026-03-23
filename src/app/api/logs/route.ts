@@ -15,7 +15,9 @@ export async function GET() {
         l.delivered_at as "deliveredAt",
         l.bounced_at as "bouncedAt",
         l.complained_at as "complainedAt",
+        l.resend_id as "resendId",
         l.created_at as "createdAt",
+
         json_build_object('name', ld.name, 'email', ld.email) as lead
       FROM email_logs l
       JOIN leads ld ON l.lead_id = ld.id
