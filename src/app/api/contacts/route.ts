@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 
 export async function POST(req: Request) {
   try {
-    const { name, email } = await req.json();
+    const { name, email, city } = await req.json();
 
     if (!email) {
       return NextResponse.json(
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const lead = await prisma.lead.upsert({
+    const lead = await (prisma.lead as any).upsert({
       where: {
         tenantId_email: {
           tenantId: tenant.id,
@@ -31,11 +31,13 @@ export async function POST(req: Request) {
       },
       update: {
         name,
+        city,
       },
       create: {
         tenantId: tenant.id,
         email: email.toLowerCase(),
         name,
+        city,
       },
     });
 

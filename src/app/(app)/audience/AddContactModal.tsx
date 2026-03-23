@@ -1,15 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X, UserPlus, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function AddContactModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (!isOpen) return null;
 
@@ -22,7 +29,7 @@ export function AddContactModal({ isOpen, onClose }: { isOpen: boolean; onClose:
       const res = await fetch("/api/contacts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email }),
+        body: JSON.stringify({ name, email, city }),
       });
 
       if (!res.ok) {
@@ -32,6 +39,7 @@ export function AddContactModal({ isOpen, onClose }: { isOpen: boolean; onClose:
 
       setName("");
       setEmail("");
+      setCity("");
       onClose();
       router.refresh();
     } catch (err: any) {
@@ -41,9 +49,9 @@ export function AddContactModal({ isOpen, onClose }: { isOpen: boolean; onClose:
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="glass-card w-full max-w-md relative animate-in zoom-in-95 duration-300">
+  const modalContent = (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
+      <div className="glass-card bg-slate-900/90 w-full max-w-md relative animate-in zoom-in-95 duration-300 shadow-2xl">
         <button 
           onClick={onClose}
           className="absolute right-4 top-4 text-slate-400 hover:text-slate-200 transition-colors"
@@ -69,6 +77,17 @@ export function AddContactModal({ isOpen, onClose }: { isOpen: boolean; onClose:
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ej: Juan Pérez"
+              className="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-white"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-300">Localidad (Opcional)</label>
+            <input
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="Ej: Buenos Aires"
               className="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-white"
             />
           </div>
@@ -109,4 +128,7 @@ export function AddContactModal({ isOpen, onClose }: { isOpen: boolean; onClose:
       </div>
     </div>
   );
+
+  if (!mounted) return null;
+  return createPortal(modalContent, document.body);
 }

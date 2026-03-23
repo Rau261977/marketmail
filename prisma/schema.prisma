@@ -52,6 +52,7 @@ model Lead {
   tenantId       String    @map("tenant_id") @db.Uuid
   email          String
   name           String?
+  city           String?
   metadata       Json?     @default("{}")
   unsubscribedAt DateTime? @map("unsubscribed_at")
   createdAt      DateTime  @default(now()) @map("created_at")
@@ -170,7 +171,7 @@ model EmailLog {
   createdAt  DateTime @default(now()) @map("created_at")
 
   tenant   Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  lead     Lead           @relation(fields: [leadId], references: [id])
+  lead     Lead           @relation(fields: [leadId], references: [id], onDelete: Cascade)
   template EmailTemplate? @relation(fields: [templateId], references: [id])
 
   @@map("email_logs")

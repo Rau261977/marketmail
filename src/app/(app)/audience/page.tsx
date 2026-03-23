@@ -10,6 +10,7 @@ import {
 import { SendNowButton } from "@/components/SendNowButton";
 import { AddContactModal } from "./AddContactModal";
 import { prisma } from "@/lib/db";
+import { ContactActions } from "./ContactActions";
 import { ClientAudienceActions } from "./ClientAudienceActions";
 
 async function getAudienceData() {
@@ -55,8 +56,9 @@ export default async function AudiencePage() {
         </button>
       </div>
 
-      <div className="glass-card overflow-hidden !p-0">
-        <table className="w-full text-left border-collapse">
+      <div className="glass-card !p-0">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-white/5 bg-white/[0.02]">
               <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Nombre</th>
@@ -93,9 +95,7 @@ export default async function AudiencePage() {
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-2">
                     {templateId && <SendNowButton leadId={lead.id} templateId={templateId} />}
-                    <button className="p-2 text-slate-400 hover:text-slate-200 transition-colors">
-                        <MoreHorizontal size={18} />
-                    </button>
+                    <ContactActions lead={lead} />
                   </div>
                 </td>
               </tr>
@@ -113,6 +113,7 @@ export default async function AudiencePage() {
           </tbody>
         </table>
       </div>
+     </div>
     </div>
   );
 }
