@@ -12,12 +12,19 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { type, data } = body;
-    const resendId = data.email_id;
+    const resendId = data.email_id || data.id;
+
     
-    // Extract log_id from tags if available (our reliable internal ID)
-    const logId = data.tags?.log_id;
+    // Extract log_id from tags array if available
+    let logId = null;
+    if (Array.isArray(data.tags)) {
+      logId = data.tags.find((t: any) => t.name === 'log_id' || t.key === 'log_id')?.value;
+    } else if (data.tags && typeof data.tags === 'object') {
+      logId = data.tags.log_id;
+    }
 
     console.log(`[Resend Webhook] Event: ${type} | ResendID: ${resendId} | LogID: ${logId}`);
+
 
     if (!resendId && !logId) {
       console.warn('[Resend Webhook] Missing both email_id and log_id in payload');
