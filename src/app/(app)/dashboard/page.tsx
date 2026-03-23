@@ -43,51 +43,33 @@ async function getStats() {
 
   const sevenDaysAgo = last7Days[0];
 
-  const logs = await prisma.emailLog.findMany({
-    where: {
-      OR: [
-        { createdAt: { gte: sevenDaysAgo } },
-        { openedAt: { gte: sevenDaysAgo } },
-        { deliveredAt: { gte: sevenDaysAgo } },
-        { bouncedAt: { gte: sevenDaysAgo } }
-      ]
-    },
-    select: {
-      createdAt: true,
-      openedAt: true,
-      deliveredAt: true,
-      bouncedAt: true,
-      status: true
-    }
-  });
+  const logs = await prisma.$queryRaw`
+    SELECT 
+      created_at as "createdAt", 
+      opened_at as "openedAt", 
+      delivered_at as "deliveredAt", 
+      bounced_at as "bouncedAt", 
+      status 
+    FROM email_logs 
+    WHERE created_at >= ${sevenDaysAgo}
+       OR opened_at >= ${sevenDaysAgo}
+       OR delivered_at >= ${sevenDaysAgo}
+       OR bounced_at >= ${sevenDaysAgo}
+  ` as any[];
 
   const dailyStats = last7Days.map(date => {
     const nextDate = new Date(date);
     nextDate.setDate(nextDate.getDate() + 1);
     
-    const sent = logs.filter(l => 
-      l.status === 'sent' && 
-      l.createdAt >= date && 
-      l.createdAt < nextDate
-    ).length;
+    const dayLogs = logs.filter(l => {
+      const d = new Date(l.createdAt);
+      return d >= date && d < nextDate;
+    });
 
-    const opened = logs.filter(l => 
-      l.openedAt && 
-      l.openedAt >= date && 
-      l.openedAt < nextDate
-    ).length;
-
-    const delivered = logs.filter(l => 
-      l.deliveredAt && 
-      l.deliveredAt >= date && 
-      l.deliveredAt < nextDate
-    ).length;
-
-    const bounced = logs.filter(l => 
-      l.bouncedAt && 
-      l.bouncedAt >= date && 
-      l.bouncedAt < nextDate
-    ).length;
+    const sent = dayLogs.length;
+    const opened = dayLogs.filter(l => l.openedAt !== null).length;
+    const delivered = dayLogs.filter(l => l.deliveredAt !== null).length;
+    const bounced = dayLogs.filter(l => l.bouncedAt !== null).length;
 
     return {
       date: date.toLocaleDateString('es-ES', { weekday: 'short' }),

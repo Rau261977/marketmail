@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { Send, CheckCircle2, Eye, AlertCircle, TrendingUp } from 'lucide-react';
 
 interface ChartData {
   date: string;
@@ -15,58 +16,93 @@ interface DeliveryChartProps {
 }
 
 export function DeliveryChart({ data }: DeliveryChartProps) {
-  const maxVal = Math.max(...data.map(d => Math.max(d.sent, d.opened, d.delivered || 0, 10)));
-  
   return (
-    <div className="w-full h-full flex flex-col pt-4">
-      <div className="flex-1 flex items-end justify-between gap-1 sm:gap-4 px-2 pb-6">
-        {data.map((day, i) => (
-          <div key={i} className="flex-1 flex flex-col items-center gap-2 group relative h-full justify-end">
-            <div className="w-full flex justify-center gap-1 items-end h-full">
-              {/* Sent Bar */}
-              <div 
-                className="w-2 sm:w-4 rounded-t-sm bg-violet-500/20 relative group-hover:bg-violet-500/40 transition-all duration-500 ease-out"
-                style={{ height: `${Math.max((day.sent / maxVal) * 100, 2)}%` }}
-              >
-                <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap text-[10px] text-slate-300 bg-slate-900/90 px-2 py-1 rounded pointer-events-none z-20 border border-white/10 shadow-xl">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-violet-300">Enviados: {day.sent}</span>
-                    <span className="text-blue-300">Entregados: {day.delivered || 0}</span>
-                    <span className="text-emerald-300 font-bold">Abiertos: {day.opened}</span>
-                    {(day.bounced || 0) > 0 && <span className="text-rose-400">Rebotados: {day.bounced}</span>}
+    <div className="w-full h-full flex flex-col pt-2">
+      {/* Performance Grid Area - High resolution of information */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
+        {data.map((day, i) => {
+          const openRate = day.sent > 0 ? Math.round((day.opened / day.sent) * 100) : 0;
+          const bounced = day.bounced || 0;
+          
+          return (
+            <div 
+              key={i} 
+              className={`flex flex-col rounded-2xl border transition-all duration-300 ${
+                day.sent > 0 
+                ? 'bg-white/[0.04] border-white/10 shadow-lg' 
+                : 'bg-transparent border-white/5 opacity-50'
+              }`}
+            >
+              {/* Header */}
+              <div className="py-3 px-4 border-b border-white/5 flex justify-between items-center">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{day.date}</span>
+                {day.sent > 0 && (
+                  <div className={`w-2 h-2 rounded-full ${openRate >= 50 ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+                )}
+              </div>
+              
+              {/* Stats Body */}
+              <div className="p-4 space-y-4 flex flex-col items-center text-center">
+                {/* Sent */}
+                <div className="flex flex-col items-center">
+                  <div className="flex items-center gap-2 text-slate-500 mb-1">
+                    <Send size={12} />
+                    <span className="text-[10px] uppercase font-semibold">Enviados</span>
+                  </div>
+                  <span className="text-xl font-mono font-bold text-white tracking-tight">{day.sent}</span>
+                </div>
+                
+                {/* Delivered */}
+                <div className="flex flex-col items-center">
+                  <div className="flex items-center gap-2 text-blue-500/70 mb-1">
+                    <CheckCircle2 size={12} />
+                    <span className="text-[10px] uppercase font-semibold">Entregados</span>
+                  </div>
+                  <span className="text-lg font-mono text-blue-400/90">{day.delivered || 0}</span>
+                </div>
+
+                {/* Opened */}
+                <div className="flex flex-col items-center">
+                  <div className="flex items-center gap-2 text-violet-500/70 mb-1">
+                    <Eye size={12} />
+                    <span className="text-[10px] uppercase font-semibold text-violet-400/70">Abiertos</span>
+                  </div>
+                  <span className="text-lg font-mono text-violet-400 font-bold">{day.opened}</span>
+                </div>
+
+                {/* Bounced */}
+                <div className="flex flex-col items-center">
+                  <div className="flex items-center gap-2 text-rose-500/70 mb-1">
+                    <AlertCircle size={12} />
+                    <span className="text-[10px] uppercase font-semibold text-rose-400/70">Rebotados</span>
+                  </div>
+                  <span className="text-lg font-mono text-rose-400/80">{bounced}</span>
+                </div>
+
+                {/* Open Rate Badge - Even Bigger and Centered */}
+                <div className={`mt-4 w-full py-4 px-2 rounded-2xl flex flex-col items-center justify-center gap-1.5 transition-all duration-300 ${
+                  openRate >= 50 
+                  ? 'text-emerald-400' 
+                  : 'text-slate-500'
+                }`}>
+                  <span className="text-[11px] uppercase font-extrabold tracking-tighter opacity-80">Efectividad</span>
+                  <div className="flex items-center gap-1.5">
+                    <TrendingUp size={16} />
+                    <span className="text-2xl font-black">{openRate}%</span>
                   </div>
                 </div>
               </div>
-              
-              {/* Delivered Bar (New) */}
-              <div 
-                className="w-2 sm:w-4 rounded-t-sm bg-blue-500/40 relative group-hover:bg-blue-500/60 transition-all duration-500 ease-out delay-75"
-                style={{ height: `${Math.max(((day.delivered || 0) / maxVal) * 100, 2)}%` }}
-              />
-
-              {/* Opened Bar */}
-              <div 
-                className="w-2 sm:w-4 rounded-t-sm bg-violet-400 relative group-hover:bg-violet-300 transition-all duration-500 ease-out delay-150 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)]"
-                style={{ height: `${Math.max((day.opened / maxVal) * 100, 2)}%` }}
-              />
             </div>
-            <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mt-2">{day.date}</span>
-          </div>
-        ))}
+          );
+        })}
       </div>
-      
-      <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 py-4 border-t border-white/5 bg-white/[0.01] rounded-b-2xl">
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-sm bg-violet-500/20" />
-          <span className="text-[11px] text-slate-400 font-medium">Enviados</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-sm bg-blue-500/40" />
-          <span className="text-[11px] text-slate-400 font-medium">Entregados</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-sm bg-violet-400" />
-          <span className="text-[11px] text-slate-400 font-medium">Abiertos</span>
+
+      {/* Legend / Info Footer */}
+      <div className="mt-8 pt-6 border-t border-white/5 flex justify-between items-center text-slate-500 text-[11px]">
+        <p>Datos basados en los eventos de seguimiento de las últimas 24 horas por día.</p>
+        <div className="flex gap-4 uppercase tracking-tighter font-semibold">
+          <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Ideal (+50%)</span>
+          <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-amber-500" /> Revisar</span>
         </div>
       </div>
     </div>

@@ -40,7 +40,7 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-64 glass border-r border-white/5 h-full flex flex-col">
+    <aside className="w-[236px] glass border-r border-white/5 h-full flex flex-col transition-all duration-300">
       <div className="p-6">
         <h1 className="text-xl font-bold gradient-text">CarniApp</h1>
       </div>
