@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { Resend } from "resend";
+import fs from "fs";
+import path from "path";
 
 export const dynamic = 'force-dynamic';
+
 
 export async function GET() {
   const resend = new Resend(process.env.RESEND_API_KEY);
@@ -21,17 +24,24 @@ export async function GET() {
     });
 
     console.log(`[Lazy Sync] Found ${pendingLogs.length} logs to check...`);
+    const debugFile = path.join(process.cwd(), 'tmp', 'sync_debug.log');
+    if (!fs.existsSync(path.join(process.cwd(), 'tmp'))) {
+      fs.mkdirSync(path.join(process.cwd(), 'tmp'), { recursive: true });
+    }
 
     // 2. Proactively sync each log from Resend
     for (const log of pendingLogs) {
       if (!log.resendId) {
-        console.warn(`[Lazy Sync] Log ${log.id} missing resendId, skipping.`);
+        fs.appendFileSync(debugFile, `${new Date().toISOString()} | Log ${log.id} missing resendId\n`);
         continue;
       }
       
       try {
         const apiResendId = log.resendId.startsWith('re_') ? log.resendId : `re_${log.resendId}`;
         const { data, error } = await resend.emails.get(apiResendId);
+        
+        fs.appendFileSync(debugFile, `${new Date().toISOString()} | Syncing ${log.id} (${apiResendId}) | Result: ${JSON.stringify(data || error)}\n`);
+
         
         if (error) {
           console.error(`[Lazy Sync] API Error [${apiResendId}]:`, error);
