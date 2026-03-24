@@ -48,41 +48,55 @@ export async function GET() {
           continue;
         }
 
-        const resendData: any = data;
-        if (resendData) {
-          const resendStatus: any = resendData.last_event || resendData.status;
-          const resendError = resendData.error; // Some payloads might have an error field
+          const resendData: any = data;
+          if (resendData) {
+            // Priority: last_event -> status -> error object
+            const lastEvent = resendData.last_event;
+            const resendStatus = resendData.status;
+            const resendError = resendData.error;
 
-          console.log(`[Lazy Sync] Log: ${log.id} | Status: ${resendStatus} | Error: ${resendError ? JSON.stringify(resendError) : 'None'}`);
+            console.log(`[Lazy Sync] Log: ${log.id} | LastEvent: ${lastEvent} | Status: ${resendStatus} | HasError: ${!!resendError}`);
 
-          // Map Resend status to our internal status
-          let newStatus = log.status;
-          let updateData: any = {};
+            // Map Resend status to our internal status
+            let newStatus = log.status;
+            let updateData: any = {};
 
-          if (resendStatus === 'delivered') {
-            newStatus = 'delivered';
-            updateData.deliveredAt = new Date();
-          } else if (resendStatus === 'bounced') {
-            newStatus = 'bounced';
-            updateData.bouncedAt = new Date();
-          } else if (resendStatus === 'complaint' || resendStatus === 'complained') {
-            newStatus = 'complained';
-            updateData.complainedAt = new Date();
-          } else if (resendStatus === 'delivery_delayed') {
-            newStatus = 'delayed';
-          } else if (resendStatus === 'failed') {
-            newStatus = 'failed';
+            // 1. Check for explicit delivery events first
+            if (lastEvent === 'delivered') {
+              newStatus = 'delivered';
+              updateData.deliveredAt = new Date();
+            } else if (lastEvent === 'bounced') {
+              newStatus = 'bounced';
+              updateData.bouncedAt = new Date();
+            } else if (lastEvent === 'complaint' || lastEvent === 'complained') {
+              newStatus = 'complained';
+              updateData.complainedAt = new Date();
+            } else if (lastEvent === 'delivery_delayed') {
+              newStatus = 'delayed';
+            } else if (lastEvent === 'failed' || !!resendError) {
+              newStatus = 'failed';
+            } 
+            // 2. Fallback to status if no specific event yet
+            else if (resendStatus === 'delivered') {
+              newStatus = 'delivered';
+              updateData.deliveredAt = new Date();
+            } else if (resendStatus === 'bounced') {
+              newStatus = 'bounced';
+              updateData.bouncedAt = new Date();
+            }
+
+            // IMPORTANT: Never downgrade a specific status (delivered, bounced, delayed) back to 'sent'
+            const isDowngradeToSent = newStatus === 'sent' && ['delivered', 'bounced', 'delayed', 'complained', 'failed'].includes(log.status);
+
+            // Force update if resend has more info or different status (and it's not a downgrade)
+            if (newStatus !== log.status && !isDowngradeToSent) {
+              console.log(`[Lazy Sync] UPDATING ${log.id}: ${log.status} -> ${newStatus}`);
+              await prisma.emailLog.update({
+                where: { id: log.id },
+                data: { ...updateData, status: newStatus }
+              });
+            }
           }
-
-          // Force update if resend has more info or different status
-          if (newStatus !== log.status) {
-            console.log(`[Lazy Sync] UPDATING ${log.id}: ${log.status} -> ${newStatus}`);
-            await prisma.emailLog.update({
-              where: { id: log.id },
-              data: { ...updateData, status: newStatus }
-            });
-          }
-        }
       } catch (e) {
         console.error(`[Lazy Sync] Exception for ${log.id}:`, e);
       }

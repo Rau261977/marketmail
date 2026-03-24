@@ -78,10 +78,16 @@ export function EmailLogsDashboard({ initialLogs, serverTime: initialServerTime 
 
   const stats = {
     sent: logs.length,
-    delivered: logs.filter(l => l.deliveredAt !== null || (l.status === 'sent' && !l.bouncedAt)).length,
+    delivered: logs.filter(l => 
+      l.deliveredAt !== null || 
+      l.status === 'delivered' || 
+      l.openedAt !== null || 
+      l.clickedAt !== null
+    ).length,
     opened: logs.filter(l => l.openedAt !== null).length,
     clicked: logs.filter(l => l.clickedAt !== null).length,
     bounced: logs.filter(l => l.bouncedAt !== null || l.status === 'bounced').length,
+    delayed: logs.filter(l => l.status === 'delayed' || l.status === 'delivery_delayed').length,
   };
 
   const openRate = stats.delivered > 0 ? ((stats.opened / stats.delivered) * 100).toFixed(1) : "0";
@@ -90,18 +96,22 @@ export function EmailLogsDashboard({ initialLogs, serverTime: initialServerTime 
   return (
     <div className="space-y-8">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
         <div className="glass-card border-emerald-500/20">
           <p className="text-slate-400 text-sm">Entregados</p>
           <h3 className="text-2xl font-bold text-emerald-400">{stats.delivered}</h3>
+        </div>
+        <div className="glass-card border-amber-500/20">
+          <p className="text-slate-400 text-sm">Demorados</p>
+          <h3 className="text-2xl font-bold text-amber-500">{stats.delayed}</h3>
         </div>
         <div className="glass-card border-rose-500/20">
           <p className="text-slate-400 text-sm">Rebotes</p>
           <h3 className="text-2xl font-bold text-rose-400">{stats.bounced}</h3>
         </div>
         <div className="glass-card border-blue-500/20">
-          <p className="text-slate-400 text-sm">Tasa de Apertura</p>
-          <h3 className="text-2xl font-bold text-blue-400">{openRate}%</h3>
+          <p className="text-slate-400 text-sm">Aperturas</p>
+          <h3 className="text-2xl font-bold text-blue-400">{stats.opened}</h3>
         </div>
         <div className="glass-card border-amber-500/20">
           <p className="text-slate-400 text-sm">Clics</p>
