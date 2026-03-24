@@ -234,7 +234,7 @@ export function EmailLogsDashboard({ initialLogs, serverTime: initialServerTime 
                           <XCircle size={14} />
                           Spam
                         </div>
-                      ) : log.deliveredAt || log.status === 'delivered' || log.openedAt || log.clickedAt ? (
+                      ) : (log.deliveredAt || log.status === 'delivered' || log.openedAt || log.clickedAt) ? (
                         <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium bg-emerald-500/10 w-fit px-2 py-1 rounded-full border border-emerald-500/20">
                           <CheckCircle2 size={14} />
                           Entregado
@@ -245,6 +245,7 @@ export function EmailLogsDashboard({ initialLogs, serverTime: initialServerTime 
                           Enviando...
                         </div>
                       )}
+
                     </td>
 
 

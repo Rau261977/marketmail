@@ -135,7 +135,7 @@ export class QueueWorker {
           }
         });
 
-        // Log the send with optimistic 'delivered' status
+        // Log the send
         await prisma.emailLog.create({
           data: {
             id: trackingId,
@@ -143,11 +143,11 @@ export class QueueWorker {
             leadId: lead.id,
             templateId: template?.id,
             resendId: result.id,
-            status: 'delivered',
-            deliveredAt: new Date()
+            status: 'sent'
           }
         });
       } else {
+
 
 
         await prisma.emailQueue.update({

@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: result.error }, { status: 500 });
     }
 
-    // Log the send with optimistic 'delivered' status
+    // Log the send
     await prisma.emailLog.create({
         data: {
             id: trackingId,
@@ -76,10 +76,10 @@ export async function POST(request: Request) {
             leadId: lead.id,
             templateId: template.id,
             resendId: result.id,
-            status: "delivered",
-            deliveredAt: new Date()
+            status: "sent"
         }
     });
+
 
     return NextResponse.json({ success: true, resendId: result.id });
   } catch (error: any) {
