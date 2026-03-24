@@ -47,7 +47,8 @@ export function EmailLogsDashboard({ initialLogs, serverTime: initialServerTime 
       if (document.visibilityState !== 'visible') return;
 
       try {
-        const res = await fetch("/api/logs");
+        // Use a cache buster to ensure Next.js/Browser doesn't aggressively cache the response
+        const res = await fetch(`/api/logs?t=${Date.now()}`, { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           // The API now returns { logs, serverTime }

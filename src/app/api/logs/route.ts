@@ -24,15 +24,10 @@ export async function GET() {
     });
 
     console.log(`[Lazy Sync] Found ${pendingLogs.length} logs to check...`);
-    const debugFile = path.join(process.cwd(), 'tmp', 'sync_debug.log');
-    if (!fs.existsSync(path.join(process.cwd(), 'tmp'))) {
-      fs.mkdirSync(path.join(process.cwd(), 'tmp'), { recursive: true });
-    }
-
     // 2. Proactively sync each log from Resend
     for (const log of pendingLogs) {
       if (!log.resendId) {
-        fs.appendFileSync(debugFile, `${new Date().toISOString()} | Log ${log.id} missing resendId\n`);
+        console.log(`[Lazy Sync] Log ${log.id} missing resendId`);
         continue;
       }
       
@@ -44,7 +39,7 @@ export async function GET() {
         
         const { data, error } = await resend.emails.get(apiResendId);
         
-        fs.appendFileSync(debugFile, `${new Date().toISOString()} | Syncing ${log.id} (${apiResendId}) | Result: ${error ? 'ERROR: ' + error.message : 'SUCCESS'}\n`);
+        console.log(`[Lazy Sync] Syncing ${log.id} (${apiResendId}) | Result: ${error ? 'ERROR: ' + error.message : 'SUCCESS'}`);
 
         
         if (error) {
