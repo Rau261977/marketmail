@@ -19,8 +19,11 @@ export async function POST(request: Request) {
 
     const rawResendId = data?.email_id || data?.id || body.id;
     
-    // Normalize IDs by removing "re_" prefix if present
+    // Normalize IDs: remove "re_" prefix only if needed
+    // Smart normalization: if it's already a UUID, keep it as is.
     const normalize = (id?: any) => (typeof id === 'string' ? id.replace(/^re_/, '') : id);
+    const isUuidFormat = (id: any) => typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id.replace(/^re_/, ''));
+    
     const resendId = normalize(rawResendId);
 
     // Extract log_id from various possible locations and normalize

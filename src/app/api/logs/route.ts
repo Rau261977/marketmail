@@ -37,10 +37,14 @@ export async function GET() {
       }
       
       try {
-        const apiResendId = log.resendId.startsWith('re_') ? log.resendId : `re_${log.resendId}`;
+        // Smart ID handling: Resend IDs can be raw UUIDs or prefixed with re_
+        // If it's already a UUID, don't prepend re_ as it causes "Invalid UUID" error
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(log.resendId);
+        const apiResendId = isUuid ? log.resendId : (log.resendId.startsWith('re_') ? log.resendId : `re_${log.resendId}`);
+        
         const { data, error } = await resend.emails.get(apiResendId);
         
-        fs.appendFileSync(debugFile, `${new Date().toISOString()} | Syncing ${log.id} (${apiResendId}) | Result: ${JSON.stringify(data || error)}\n`);
+        fs.appendFileSync(debugFile, `${new Date().toISOString()} | Syncing ${log.id} (${apiResendId}) | Result: ${error ? 'ERROR: ' + error.message : 'SUCCESS'}\n`);
 
         
         if (error) {
