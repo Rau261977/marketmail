@@ -249,12 +249,27 @@ export function EmailLogsDashboard({ initialLogs, serverTime: initialServerTime 
                           <XCircle size={14} />
                           Fallido
                         </div>
-                      ) : (
+                      ) : log.status === 'sent' ? (
                         <div className="flex items-center gap-2 text-blue-400 text-xs font-medium bg-blue-500/10 w-fit px-2 py-1 rounded-full border border-blue-500/20">
-                          <Clock size={14} className="animate-pulse" />
-                          Enviando...
+                          {new Date().getTime() - new Date(log.createdAt).getTime() < 60000 ? (
+                            <>
+                              <Clock size={14} className="animate-pulse" />
+                              Enviando...
+                            </>
+                          ) : (
+                            <>
+                              <CheckCircle2 size={14} className="text-blue-400/50" />
+                              Enviado
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-slate-400 text-xs font-medium bg-white/5 w-fit px-2 py-1 rounded-full border border-white/10">
+                          <Clock size={14} />
+                          {log.status}
                         </div>
                       )}
+
 
 
                     </td>
