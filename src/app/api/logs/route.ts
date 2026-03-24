@@ -57,7 +57,12 @@ export async function GET() {
           } else if (resendStatus === 'complaint' || resendStatus === 'complained') {
             newStatus = 'complained';
             updateData.complainedAt = new Date();
+          } else if (resendStatus === 'delivery_delayed') {
+            newStatus = 'delayed';
+          } else if (resendStatus === 'failed') {
+            newStatus = 'failed';
           }
+
 
           if (newStatus !== log.status) {
             console.log(`[Lazy Sync] UPDATING DATABASE: ${log.id} -> ${newStatus}`);

@@ -239,12 +239,23 @@ export function EmailLogsDashboard({ initialLogs, serverTime: initialServerTime 
                           <CheckCircle2 size={14} />
                           Entregado
                         </div>
+                      ) : log.status === 'delayed' || log.status === 'delivery_delayed' ? (
+                        <div className="flex items-center gap-2 text-amber-400 text-xs font-medium bg-amber-500/10 w-fit px-2 py-1 rounded-full border border-amber-500/20">
+                          <Clock size={14} />
+                          Demorado
+                        </div>
+                      ) : log.status === 'failed' ? (
+                        <div className="flex items-center gap-2 text-rose-400 text-xs font-medium bg-rose-500/10 w-fit px-2 py-1 rounded-full border border-rose-500/20">
+                          <XCircle size={14} />
+                          Fallido
+                        </div>
                       ) : (
                         <div className="flex items-center gap-2 text-blue-400 text-xs font-medium bg-blue-500/10 w-fit px-2 py-1 rounded-full border border-blue-500/20">
                           <Clock size={14} className="animate-pulse" />
                           Enviando...
                         </div>
                       )}
+
 
                     </td>
 

@@ -58,6 +58,12 @@ export async function POST(request: Request) {
         updateData.status = 'complained';
         updateData.complainedAt = now;
         break;
+      case 'delivery_delayed':
+        updateData.status = 'delayed';
+        break;
+      case 'failed':
+        updateData.status = 'failed';
+        break;
       default:
         console.log(`[Resend Webhook] Ignored event type: ${finalType}`);
         return NextResponse.json({ message: 'Event not tracked' });
@@ -115,15 +121,15 @@ export async function POST(request: Request) {
         SET "status" = 'delivered', "delivered_at" = COALESCE("delivered_at", ${now})
         WHERE "id" = ${targetedLogId}::uuid
       `;
-    } else if (statusType === 'bounced' || statusType === 'complained') {
-      const dbStatus = statusType === 'bounced' ? 'bounced' : 'complained';
-      const dbColumn = statusType === 'bounced' ? 'bounced_at' : 'complained_at';
-      
-      // We use a safe query approach here
+    } else if (statusType === 'bounced' || statusType === 'complained' || statusType === 'delivery_delayed' || statusType === 'failed') {
       if (statusType === 'bounced') {
         result = await prisma.$executeRaw`UPDATE "email_logs" SET "status" = 'bounced', "bounced_at" = ${now} WHERE "id" = ${targetedLogId}::uuid`;
-      } else {
+      } else if (statusType === 'complained') {
         result = await prisma.$executeRaw`UPDATE "email_logs" SET "status" = 'complained', "complained_at" = ${now} WHERE "id" = ${targetedLogId}::uuid`;
+      } else if (statusType === 'delivery_delayed') {
+        result = await prisma.$executeRaw`UPDATE "email_logs" SET "status" = 'delayed' WHERE "id" = ${targetedLogId}::uuid`;
+      } else if (statusType === 'failed') {
+        result = await prisma.$executeRaw`UPDATE "email_logs" SET "status" = 'failed' WHERE "id" = ${targetedLogId}::uuid`;
       }
     }
 
