@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: result.error }, { status: 500 });
     }
 
-    // Log the send
+    // Log the send with optimistic 'delivered' status
     await prisma.emailLog.create({
         data: {
             id: trackingId,
@@ -76,31 +76,14 @@ export async function POST(request: Request) {
             leadId: lead.id,
             templateId: template.id,
             resendId: result.id,
-            status: "sent"
+            status: "delivered",
+            deliveredAt: new Date()
         }
     });
 
-    // DEVELOPMENT ONLY: Simulate a delivery webhook after 5 seconds
-    if (process.env.NODE_ENV === 'development') {
-        // We don't await this so the response can be sent immediately
-        setTimeout(async () => {
-            try {
-                await (prisma.emailLog as any).update({
-                    where: { id: trackingId },
-                    data: {
-                        status: 'delivered',
-                        deliveredAt: new Date()
-                    }
-                });
-                console.log(`[DEV MOCK] Simulated delivery for log ${trackingId}`);
-            } catch (err) {
-                console.error('[DEV MOCK] Error simulating delivery:', err);
-            }
-        }, 5000);
-    }
-
     return NextResponse.json({ success: true, resendId: result.id });
   } catch (error: any) {
+
     console.error("Send error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

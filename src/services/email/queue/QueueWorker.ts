@@ -135,7 +135,7 @@ export class QueueWorker {
           }
         });
 
-        // Log the send
+        // Log the send with optimistic 'delivered' status
         await prisma.emailLog.create({
           data: {
             id: trackingId,
@@ -143,28 +143,12 @@ export class QueueWorker {
             leadId: lead.id,
             templateId: template?.id,
             resendId: result.id,
-            status: 'sent'
+            status: 'delivered',
+            deliveredAt: new Date()
           }
         });
-
-        // DEVELOPMENT ONLY: Simulate a delivery webhook after 5 seconds
-        if (process.env.NODE_ENV === 'development') {
-            setTimeout(async () => {
-                try {
-                    await (prisma.emailLog as any).update({
-                        where: { id: trackingId },
-                        data: {
-                            status: 'delivered',
-                            deliveredAt: new Date()
-                        }
-                    });
-                    console.log(`[DEV MOCK] Simulated delivery for queue log ${trackingId}`);
-                } catch (err) {
-                    console.error('[DEV MOCK] Error simulating delivery:', err);
-                }
-            }, 5000);
-        }
       } else {
+
 
         await prisma.emailQueue.update({
           where: { id: item.id },

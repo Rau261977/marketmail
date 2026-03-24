@@ -241,21 +241,12 @@ export function EmailLogsDashboard({ initialLogs, serverTime: initialServerTime 
                         </div>
                       ) : (
                         <div className="flex items-center gap-2 text-blue-400 text-xs font-medium bg-blue-500/10 w-fit px-2 py-1 rounded-full border border-blue-500/20">
-                          {new Date().getTime() - new Date(log.createdAt).getTime() < 30000 ? (
-                            <>
-                              <Clock size={14} className="animate-pulse" />
-                              Enviando...
-                            </>
-                          ) : (
-                            <>
-                              <CheckCircle2 size={14} className="text-blue-400/70" />
-                              Enviado
-                            </>
-                          )}
+                          <Clock size={14} className="animate-pulse" />
+                          Enviando...
                         </div>
-
                       )}
                     </td>
+
 
                     <td className="px-6 py-4 text-sm text-slate-400 tabular-nums">
                       <FormattedDate date={log.createdAt} />
