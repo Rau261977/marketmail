@@ -4,47 +4,46 @@ import { Resend } from "resend";
 
 export const dynamic = 'force-dynamic';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function GET() {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  
   try {
-    // 1. Fetch recent 'sent' logs to potentially sync them from Resend API
-    // We only sync if they are older than 3 seconds to give the provider time to process
-    const now = new Date();
-    const tenSecondsAgo = new Date(now.getTime() - 10000);
-
+    // 1. Fetch recent logs that are not in a final state (Bounced/Opened)
+    // to proactively sync them from Resend API
     const pendingLogs = await prisma.emailLog.findMany({
       where: {
-        status: 'sent',
-        createdAt: { lt: tenSecondsAgo }
+        status: { in: ['sent', 'delivered', 'delayed', 'delivery_delayed'] },
+        openedAt: null,
+        bouncedAt: null
       },
       take: 20,
       orderBy: { createdAt: 'desc' }
     });
 
-    console.log(`[Lazy Sync] Running sync for ${pendingLogs.length} pending logs...`);
+    console.log(`[Lazy Sync] Found ${pendingLogs.length} logs to check...`);
 
-    // 2. Proactively sync each pending log from Resend
+    // 2. Proactively sync each log from Resend
     for (const log of pendingLogs) {
-      if (!log.resendId) continue;
+      if (!log.resendId) {
+        console.warn(`[Lazy Sync] Log ${log.id} missing resendId, skipping.`);
+        continue;
+      }
       
       try {
         const apiResendId = log.resendId.startsWith('re_') ? log.resendId : `re_${log.resendId}`;
         const { data, error } = await resend.emails.get(apiResendId);
         
         if (error) {
-          console.error(`[Lazy Sync] Resend API error for ${apiResendId}:`, error);
+          console.error(`[Lazy Sync] API Error [${apiResendId}]:`, error);
           continue;
         }
 
         const resendData: any = data;
         if (resendData) {
           const resendStatus: any = resendData.last_event || resendData.status;
-          console.log(`[Lazy Sync] DATA for ${log.id}:`, JSON.stringify({ 
-            resendId: apiResendId, 
-            status: resendData.status, 
-            last_event: resendData.last_event 
-          }));
+          const resendError = resendData.error; // Some payloads might have an error field
+
+          console.log(`[Lazy Sync] Log: ${log.id} | Status: ${resendStatus} | Error: ${resendError ? JSON.stringify(resendError) : 'None'}`);
 
           // Map Resend status to our internal status
           let newStatus = log.status;
@@ -63,17 +62,11 @@ export async function GET() {
             newStatus = 'delayed';
           } else if (resendStatus === 'failed') {
             newStatus = 'failed';
-          } else if (resendStatus === 'queued') {
-            newStatus = 'queued';
-          } else if (resendStatus === 'scheduled') {
-            newStatus = 'scheduled';
-          } else if (resendStatus === 'canceled') {
-            newStatus = 'canceled';
           }
 
-
+          // Force update if resend has more info or different status
           if (newStatus !== log.status) {
-            console.log(`[Lazy Sync] UPDATING DATABASE ${log.id}: ${log.status} -> ${newStatus}`);
+            console.log(`[Lazy Sync] UPDATING ${log.id}: ${log.status} -> ${newStatus}`);
             await prisma.emailLog.update({
               where: { id: log.id },
               data: { ...updateData, status: newStatus }
@@ -81,9 +74,10 @@ export async function GET() {
           }
         }
       } catch (e) {
-        console.error(`[Lazy Sync] Unexpected error syncing log ${log.id}:`, e);
+        console.error(`[Lazy Sync] Exception for ${log.id}:`, e);
       }
     }
+
 
 
 
